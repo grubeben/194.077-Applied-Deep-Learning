@@ -3,7 +3,7 @@ Inspection into the performance and methodical differences of policy-based and v
 ____________________________________________________________________________________
 ## IN A NUTSHELL
 
-Utilize two (very different) pygame environment to compare how value-based 
+Utilize two (very different) pygame environments to compare how value-based 
 vs. policy-based learning algorithms perform. This is with respect to policy
 (max. reward) and convergence. I will make hypotheses about why 
 I believe f.e. a DQN-agent will outperform an A2C on a certain game and the other way 
