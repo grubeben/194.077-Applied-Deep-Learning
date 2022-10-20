@@ -30,6 +30,19 @@ Focus on one Reinforcement-algorithm (either value- or policy-based BUT definite
 build a basic version (not deep) and then try to enhance it by more accomplished and deeper network architectures for a specific 
 application (this would rank in the "beat the stars"-category).
 ____________________________________________________________________________________
+## FOUNDATIONS 
+
+*Advantages Policy-Based:*
+
+1) Agent can naturally handle continuous action spaces
+2) Agent can learn appropriate levels of exploration
+
+*Advantages Value-Based:*
+
+1)
+2)
+
+____________________________________________________________________________________
 ## NECESSARY STEPS
 
 ### 1. Solidify understanding about policy-based methods
@@ -143,5 +156,3 @@ ________________________________________________________________________________
 ## References
 
  [^1:] [Sutton&Barto - Reinforcement Learning] (https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
-
-
