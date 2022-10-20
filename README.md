@@ -136,7 +136,7 @@ demonstrate significant pecularities of the respective agent
 
 </details>
 
-*Note:* steps I) to III) are probably inseperable and will run in parallel.
+*Note:* steps 1) to 3) will run in parallel.
 _____________________________________________________________________________________
 ## Sum of steps: *planned* ~80h
 
