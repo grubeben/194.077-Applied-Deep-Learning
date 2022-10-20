@@ -34,11 +34,18 @@ ________________________________________________________________________________
 
 ### 1. Solidify understanding about policy-based methods | *planned:* 10h
 
+<details><summary>Get details</summary>
+ 
+### This section is hidden until you press "Get details"
+ 
 While I have written simple scripts that implement Q-learning and DQ-learning agents
 for applications like "Cart-Pole" and "Frozen Lake" (openai-gym), I have not come into contact with policy-based methods very intensively.
 Sutton& Barto (2nd edition) has given me a theoretical idea about how these methods work
 and relate to the value-based ones, however I haven't fully understood the approach, specific methods
 and when their application is supposed to be favorable.
+ 
+</details>
+
 
 ### 2. Establish hypothesis and decide on comparisson parameters | *planned:* 5h
 
