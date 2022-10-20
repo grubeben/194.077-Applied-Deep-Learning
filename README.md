@@ -1,5 +1,5 @@
 # 194.077-Applied-Deep-Learning
-Inspection into the performance and methodical differences of policy-based and valuebased reinforcement learning agents
+Inspection into the performance and methodical differences of policy-based and value-based reinforcement learning agents
 ____________________________________________________________________________________
 ## IN A NUTSHELL
 
