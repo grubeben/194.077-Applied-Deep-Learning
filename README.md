@@ -40,10 +40,11 @@ ________________________________________________________________________________
  
 While I have written simple scripts that implement Q-learning and DQ-learning agents
 for applications like "Cart-Pole" and "Frozen Lake" (openai-gym), I have not come into contact with policy-based methods very intensively.
-Sutton& Barto (2nd edition) [^1] has given me a theoretical idea about how these methods work
+Sutton& Barto (2nd edition)[^1] has given me a theoretical idea about how these methods work
 and relate to the value-based ones, however I haven't fully understood the approach, specific methods
 and when their application is supposed to be favorable.
- 
+
+ [^1:] [Sutton&Barto - Reinforcement Learning] (https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
 </details>
 
 
@@ -141,6 +142,6 @@ ________________________________________________________________________________
 ## Sum of steps: *planned* ~80h
 
 ## References
-[^1] [Sutton&Barto - Reinforcement Learning] (https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
+
 
 
