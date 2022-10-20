@@ -113,12 +113,20 @@ find a way to measure change in policy from one episode to later ones.
 ### 8. Results 
 <details><summary>Get details</summary>
  
- *planned:* 4h
+ *planned:* 6h
 
 Sum up results for delivery of Assignment 2.
 </details>
 
-### 9. Application 
+### 9. Presentation 
+<details><summary>Get details</summary>
+ 
+ *planned:* 4h
+
+Prepare for presentation.
+</details>
+
+### 10. Application 
 <details><summary>Get details</summary>
  
  *planned:* 6h
