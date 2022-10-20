@@ -32,11 +32,11 @@ application (this would rank in the "beat the stars"-category).
 ____________________________________________________________________________________
 ## NECESSARY STEPS
 
-### 1. Solidify understanding about policy-based methods | *planned:* 10h
+### 1. Solidify understanding about policy-based methods
 
 <details><summary>Get details</summary>
  
-### This section is hidden until you press "Get details"
+*planned:* 10h
  
 While I have written simple scripts that implement Q-learning and DQ-learning agents
 for applications like "Cart-Pole" and "Frozen Lake" (openai-gym), I have not come into contact with policy-based methods very intensively.
@@ -47,13 +47,23 @@ and when their application is supposed to be favorable.
 </details>
 
 
-### 2. Establish hypothesis and decide on comparisson parameters | *planned:* 5h
+### 2. Establish hypothesis and decide on comparisson parameters 
+
+<details><summary>Get details</summary>
+ 
+*planned:* 5h
 
 Based on the theoretical knowledge established in a prior stage, I will draw up hypthosis regarding **policy success** and 
 **convergence behavior** of an agent in a specific case. It might become necessary to include further benchmark-parameters
 in order to draw conclusions from the agent test runs.
+ 
+</details>
 
-### 3. Check suitability and decide on environments  | *planned:* 8h
+### 3. Check suitability and decide on environments  
+
+<details><summary>Get details</summary>
+
+*planned:* 8h
 
 Since I want to analyse the differences and areas of applicability of the different model approaches,
 rather then explore whether a certain application is realizable at all, I tend towards utilization
@@ -63,32 +73,60 @@ I am unsure whether it is smart to spend a lot of time on defining an environmen
 My first thought is smth. like pygame for a number of reasons: the evironments satisfy easy integrability,
 allow custom definition of rewards (other then openai_gym) and games are a great way to visualize policies and
 deduce clues from the agent's behaviour.
+ 
+</details>
 
-### 4. Hacking time I | *planned:* 15h
+### 4. Hacking time I 
+
+<details><summary>Get details</summary>
+ 
+*planned:* 15h
 
 Implement the agents and the connection to the environments. 
+</details>
 
-### 5. Hacking time II | *planned:* 12h
-
-Experiment and define a final reward function.
-
-### 6. Analysis regarding policy performance and convergence | *planned:* 6h
+### 5. Hacking time II 
+ <details><summary>Get details</summary>
+ 
+  *planned:* 12h
+  
+  Experiment and define a final reward function.
+</details>
+ 
+### 6. Analysis regarding policy performance and convergence 
+<details><summary>Get details</summary>
+ 
+ *planned:* 6h
 
 Train agents and lock convergence.
 find a way to measure change in policy from one episode to later ones.
+</details>
 
-### 7. (BONUS) Hacking time III | *planned:* 12h
+### 7. (BONUS) Hacking time III 
+<details><summary>Get details</summary>
+ 
+ *planned:* 12h
+ 
+ Make version with deep NNs.
+</details>
 
-Make version with deep NNs.
-
-### 8. Results | *planned:* 4h
+### 8. Results 
+<details><summary>Get details</summary>
+ 
+ *planned:* 4h
 
 Sum up results for delivery of Assignment 2.
+</details>
 
-### 9. Application | *planned:* 6h
+### 9. Application 
+<details><summary>Get details</summary>
+ 
+ *planned:* 6h
 
 Make a comparing demonstration of policies in action for the respective game. If possible highlight actions that
 demonstrate significant pecularities of the respective agent 
+
+</details>
 
 *Note:* steps I) to III) are probably inseperable and will run in parallel.
 _____________________________________________________________________________________
