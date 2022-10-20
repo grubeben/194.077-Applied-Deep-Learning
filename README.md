@@ -1,50 +1,52 @@
 # 194.077-Applied-Deep-Learning
-Inspection into the performance and methodical differences of policy-based and valuebased reinforcement learning agents 
+Inspection into the performance and methodical differences of policy-based and valuebased reinforcement learning agents
 ____________________________________________________________________________________
 ## IN A NUTSHELL
 
-Utilize a pygame environment or two (very different ones) to compare how value-based 
+Utilize two (very different) pygame environment to compare how value-based 
 vs. policy-based learning algorithms perform. This is with respect to policy
-(max. reward) and convergence. I would like to make hypotheses about why 
-I believe f.e. a DQN will outperform an A2C on a certain game and the other way 
+(max. reward) and convergence. I will make hypotheses about why 
+I believe f.e. a DQN-agent will outperform an A2C on a certain game and the other way 
 around, build and train the agents and then analyse whether and why the hypotheses 
-holds (ot not)
+holds (ot not).
+
+*Personal aim:*
+Use the course to broaden understanding of different approaches to reinforcement learning there are
+and how they relate to another.
 ____________________________________________________________________________________
-## REMARKS
+## REMARKS REGARDING THE SCOPE
 
-I understand this course is not solely focused on the "reinforcement" aspect of learning, however
-this is still the most fascinating part to me. This is why I would like to design my project in 
-such a way that allows me to dive deeper into this branch of Deep Learning. However, since the 
-methodical framework around agent-building is pretty complex on it's own (at least to me) the 
+Since the methodical framework around agent-building is pretty complex on it's own (at least to me) the 
 focus will be less on the "deep" part of deep reinforcement learning. What i mean by this is:
-My impression is that understanding and correctly applying the algorithmic logic (synergy of multiple networks
-(as in actor-critic)), connection to the environment and convergence analysis will consume 
-the largest chunk of time, whereas optimising the agents by applying a large number of layers probably
-will probably be out of scope.
+Understanding and correctly applying the algorithmic logic (synergy of multiple networks
+(as in actor-critic)), connection to the environment and convergence analysis) will consume 
+the largest chunk of time, whereas really making the agents' brains (=neural networks) "deep" by applying 
+a larger number of layers will be treated as a optional bonus, depending on how well I progress.
 
-However, if this proposal is indicating a project not heavy enough on the "deep" learning
-side of events, I would alter towards the following: Focus on one REINF-algorithm (either
-value- policy-based BUT definitely featuring a neural network), build a basic version and
-then try to enhance it by more accomplished and deeper network architectures for a specific 
-application
+*Note:*
+If this proposal is not focussing enough on the "deep" learning
+side of events, please give me a nudge! In that case, I would alter towards the following: 
+Focus on one Reinforcement-algorithm (either value- or policy-based BUT definitely featuring a neural network), 
+build a basic version (not deep) and then try to enhance it by more accomplished and deeper network architectures for a specific 
+application (this would rank in the "beat the stars"-category).
 ____________________________________________________________________________________
 ## NECESSARY STEPS
 
-### I) Build up solid understanding about policy-based methods | 
+### I) Solidify understanding about policy-based methods | *planned:* 10h
 
 While I have written simple scripts that implement Q-learning and DQ-learning agents
-for applications like "Cart-Pole" and "Frozen Lake", I have not come into contact with policy-based methods very intensively.
+for applications like "Cart-Pole" and "Frozen Lake" (openai-gym), I have not come into contact with policy-based methods very intensively.
 Sutton& Barto (2nd edition) has given me a theoretical idea about how these methods work
 and relate to the value-based ones, however I haven't fully understood the approach, specific methods
-and when their application is supposed to be favorable
+and when their application is supposed to be favorable.
 
-### II) Establish hypothesis and decide on comparisson parameters |
+### II) Establish hypothesis and decide on comparisson parameters | *planned:* 5h
 
-Based on the theoretical knowledge established in a prior stage, I will draw up hypthosis regarding policy success and 
-convergence behavior of an agent in a specific case. It might become necessary to include further benchmark-parameters
+Based on the theoretical knowledge established in a prior stage, I will draw up hypthosis regarding **policy success** and 
+**convergence behavior** of an agent in a specific case. It might become necessary to include further benchmark-parameters
 in order to draw conclusions from the agent test runs.
 
-### III) Decide on test environment(s) |
+### III) Check suitability and decide on environments  | *planned:* 8h
 
 Since I want to analyse the differences and areas of applicability of the different model approaches,
 rather then explore whether a certain application is realizable at all, I tend towards utilization
@@ -55,35 +57,35 @@ My first thought is smth. like pygame for a number of reasons: the evironments s
 allow custom definition of rewards (other then openai_gym) and games are a great way to visualize policies and
 deduce clues from the agent's behaviour.
 
-### IV) Hacking time I |
+### IV) Hacking time I | *planned:* 15h
 
 Implement the agents and the connection to the environments. 
 
-### V) Hacking time II |
+### V) Hacking time II | *planned:* 12h
 
-Define reward function.
+Experiment and define a final reward function.
 
-### VI) Hacking time III |
+### VI) Analysis regarding policy performance and convergence | *planned:* 6h
 
-Make version with deep NNs
+Train agents and lock convergence.
+find a way to measure change in policy from one episode to later ones.
 
-### VII) training |
+### VII) (BONUS) Hacking time III | *planned:* 12h
 
-Train agents and watch convergence (find way to measure change in policy
-from one episode to later ones)
+Make version with deep NNs.
 
-### IIX) Results |
+### IIX) Results | *planned:* 4h
 
-Sum up results, analysize and draw conclusions
+Sum up results for delivery of Assignment 2.
 
-### VII) Application |
+### VII) Application | *planned:* 6h
 
 Make a comparing demonstration of policies in action for the respective game. If possible highlight actions that
 demonstrate significant pecularities of the respective agent 
 
-Note: Uncertain whether II) and III) are seperable, they have some dependencies on each other
+*Note:* steps I) to III) are probably inseperable and will run in parallel.
 _____________________________________________________________________________________
-TIME TABLE IN WEEKS (starting with November) ==> SUM: 100h
+## Sum of steps: *planned* ~80h
 
 
 
