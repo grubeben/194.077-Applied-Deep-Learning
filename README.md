@@ -189,7 +189,8 @@ This is usually done simultaneously, but it might be useful to first learn value
 *Notes:* 
 * if we introduce asynchronous updates that's called A3C 
 * We need on policy targets (from that exact same step), off policy will introduce bias
-* Dataset needs to be GOOD, because a single timestep with bad policy can destroy the process ever after (Trust region policy ==> pi_{t+1} not very very different from pi_t)
+* Dataset needs to be GOOD, because a single timestep with bad policy can destroy the process ever after (Trust region policy ==> $pi_{t+1}$ not very very different from $pi_t$)
+* Gaussian Policies
 
 ### Usefulness
 
