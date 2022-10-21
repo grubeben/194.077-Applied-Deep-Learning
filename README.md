@@ -68,12 +68,12 @@ in order to draw conclusions from the agent test runs.
 
 Since I want to analyse the differences and areas of applicability of the different model approaches,
 rather then explore whether a certain application is realizable at all, I tend towards utilization
-of an off-the-shelf sort of environment. Hence, an application that is more or less "standard". While
-it would be very cool to emulate what DeepMind has recently done for matrix-multipilcation-optimisation
-I am unsure whether it is smart to spend a lot of time on defining an environment at this stage.
-My first thought is smth. like pygame for a number of reasons: the evironments satisfy easy integrability,
-allow custom definition of rewards (other then openai_gym) and games are a great way to visualize policies and
-deduce clues from the agent's behaviour.
+of an open source environment. Such are:
+*DeepMind OpenSpiel and Control Suite, Open AI Gym, TensorFlow TF-Agents, (Meta AI ReAgent), (pygame)*
+The evironments satisfy easy integrability,
+allow custom definition of rewards and games are a great way to visualize policies and deduce clues from the agent's behaviour. Some of the frameworks (DeepMind) even include analytical tools (for convergence etc.)
+
+Most interesting are OpenAIgym Atari suite for discrete action spaces and the MuJoCo environments (both by OpenAIgym and the Deepmind ControlSuite) for contiuous ones.
  
 </details>
 
