@@ -148,7 +148,7 @@ ________________________________________________________________________________
 2) Value-based (learn action-value function, easy to derive policy from a-v-function, but the value function might be very complex, even if policy is super simple ==> sometimes not efficient in learning)
 3) Policy-based (we don't learn the value, but simply the policy that obtimizes the value)
 
-1) and 2) don't focus on the real objective: policy
+1 and 2 don't focus on the real objective: policy
 
 ### Policy-Based:
 #### Method Derivation:
