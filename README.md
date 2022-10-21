@@ -158,7 +158,7 @@ sigma: NN-weights
 
 2) What do we learn exactly? 
 2.1) We define performance $J1(sigma)=v_{pi_{theta}}(s)$ for the starting state 1. We might want this performance measure to be maximized.
-2.2) Or the want the weighted average performance of the state-space to be maximized: $J_{average}(theta)= integral_over_mü*$v_{pi_{theta}}(s)$ with mü being the partition of time we spent in a certain state when following our policy. ==> a natural approach, since we want to do well in the states that appear often
+2.2) Or the want the weighted average performance of the state-space to be maximized: $J_{average}(theta)= integral_{over_mü}*$v_{pi_{theta}}(s)$ with mü being the partition of time we spent in a certain state when following our policy. ==> a natural approach, since we want to do well in the states that appear often
 
 3) Now that we have set the objective, we need to optimize the policy in a way to fulfill our demand. Gradient accent is useful (since we want to find a maximum): $delta(theta)=gradient_{theta}(J(theta))$
 
