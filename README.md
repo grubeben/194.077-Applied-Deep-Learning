@@ -91,7 +91,7 @@ Implement the agents and the connection to the environments.
  
   *planned:* 12h
   
-  Experiment and define a final reward function.
+  Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function.
 </details>
  
 ### 6. Analysis regarding policy performance and convergence 
@@ -168,7 +168,8 @@ sigma: NN-weights
 
 6) We now introduce baselines in order to reduce variance in the update: Let's introduce the baseline function $b(s)$ (which doesn't depend on the action) and hence can be subtracted from the return. We define b to be the Monte Carlo return (=average reward over whole episode). The latter can be estimated by TF (=critic)
 
-#### Actor-Critic
+#### Actor-Critic[^3]
+on policy
 Actor: learns policy; updates theta
 Critic: learns value; updates w
 
@@ -187,7 +188,7 @@ This is usually done simultaneously, but it might be useful to first learn value
 4) (min 1:16 [^2])we might have to generate a "semi-gradient"=loss from our defined gradient (since tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken.
 
 *Notes:* 
-* if we introduce asynchronous updates that's called A3C 
+* if we let multiple agents explore multiple instances of the same environment and let dem update the shared policy asynchronously training time can be decreased and effects in a single agent can beaveraged out. This is called A3C 
 * We need on policy targets (from that exact same step), off policy will introduce bias
 * Dataset needs to be GOOD, because a single timestep with bad policy can destroy the process ever after (Trust region policy ==> $pi_{t+1}$ not very very different from $pi_t$)
 * Gaussian Policies
@@ -208,13 +209,13 @@ This is usually done simultaneously, but it might be useful to first learn value
 * Agent can learn appropriate levels of exploration (probability for randomness can be different in every state, which isn't possible in value-based policies)
 
 ____________________________________________________________________________________
-## RESEARCH
-
-
-____________________________________________________________________________________
-## References
+## RESEARCH AND OTHER REFERENCES
 
  [^1:] [Sutton&Barto - Reinforcement Learning] (https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
  
  [^2:] [Deep Mind - Lecture Series]
  (https://www.youtube.com/watch?v=bRfUxQs6xIM)
+ 
+ [^3:] [Asynchronous Methods for Deep Reinforcement Learning] (https://paperswithcode.com/paper/asynchronous-methods-for-deep-reinforcement)
+ 
+ [^4:] [Playing Atari with Deep Reinforcement Learning](https://paperswithcode.com/paper/playing-atari-with-deep-reinforcement)
