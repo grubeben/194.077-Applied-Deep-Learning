@@ -69,7 +69,7 @@ in order to draw conclusions from the agent test runs.
 Since I want to analyse the differences and areas of applicability of the different model approaches,
 rather then explore whether a certain application is realizable at all, I tend towards utilization
 of an open source environment. Such are:
-*DeepMind OpenSpiel and Control Suite, Open AI Gym, TensorFlow TF-Agents, (Meta AI ReAgent), (pygame)*
+*DeepMind OpenSpiel and Control Suite (pysics-informed), Open AI Gym, TensorFlow TF-Agents, (Meta AI ReAgent), (pygame)*
 The evironments satisfy easy integrability,
 allow custom definition of rewards and games are a great way to visualize policies and deduce clues from the agent's behaviour. Some of the frameworks (DeepMind) even include analytical tools (for convergence etc.)
 
