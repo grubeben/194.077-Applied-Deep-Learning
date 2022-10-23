@@ -207,20 +207,17 @@ This is usually done simultaneously, but it might be useful to first learn value
 ____________________________________________________________________________________
 ## RESEARCH, REFERENCES AND LIBRARIES
 
- [^1:] [Sutton&Barto - Reinforcement Learning] (https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
+ [^1:] [Sutton&Barto - Reinforcement Learning](https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
  
- [^2:] [Deep Mind - Lecture Series]
- (https://www.youtube.com/watch?v=bRfUxQs6xIM)
+ [^2:] [Deep Mind - Lecture Series](https://www.youtube.com/watch?v=bRfUxQs6xIM)
  
- [^3:] [Asynchronous Methods for Deep Reinforcement Learning] (https://paperswithcode.com/paper/asynchronous-methods-for-deep-reinforcement)
+ [^3:] [Asynchronous Methods for Deep Reinforcement Learning](https://paperswithcode.com/paper/asynchronous-methods-for-deep-reinforcement)
  
- [^4:] [Playing Atari with Deep Reinforcement Learning] (https://paperswithcode.com/paper/playing-atari-with-deep-reinforcement)
+ [^4:] [Playing Atari with Deep Reinforcement Learning(https://paperswithcode.com/paper/playing-atari-with-deep-reinforcement)
  
- [^5:] [Track Mania Nations Reinforcement Framework]
- (https://github.com/trackmania-rl/tmrl)
+ [^5:] [Track Mania Nations Reinforcement Framework](https://github.com/trackmania-rl/tmrl)
  
  [^6:] [Continuous-action Reinforcement Learning for
-Playing Racing Games: Comparing SPG to PPO]
-(https://arxiv.org/pdf/2001.05270v1.pdf)
+Playing Racing Games: Comparing SPG to PPO](https://arxiv.org/pdf/2001.05270v1.pdf)
  
  [^7:] [PyBullet docu](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA/edit#heading=h.2ye70wns7io3)
