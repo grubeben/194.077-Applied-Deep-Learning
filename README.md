@@ -1,5 +1,5 @@
 # 194.077-Applied-Deep-Learning
-Inspection into the performance and methodical differences of policy-based and value-based reinforcement learning agents
+Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents
 ____________________________________________________________________________________
 ## IN A NUTSHELL
 
@@ -74,6 +74,8 @@ The evironments satisfy easy integrability,
 allow custom definition of rewards and games are a great way to visualize policies and deduce clues from the agent's behaviour. Some of the frameworks (DeepMind) even include analytical tools (for convergence etc.)
 
 Most interesting are OpenAIgym Atari suite for discrete action spaces and the MuJoCo environments (both by OpenAIgym and the Deepmind ControlSuite) for contiuous ones.
+ 
+I would have loved to use an exisitng TrackMania Nations [^5] framework in order to train a policy-based agent, however, the contributors suggest 5h training on a modern GPU (something I don't have access to) for acceptable results. I fear running the training on my CPU will lead either to timeouts (since the agent is learning online) or enourmous training sessions.
  
 </details>
 
@@ -219,4 +221,7 @@ ________________________________________________________________________________
  [^3:] [Asynchronous Methods for Deep Reinforcement Learning] (https://paperswithcode.com/paper/asynchronous-methods-for-deep-reinforcement)
  
  [^4:] [Playing Atari with Deep Reinforcement Learning] (https://paperswithcode.com/paper/playing-atari-with-deep-reinforcement)
+ 
+ [^5:] [Track Mania Nations Reinforcement Framework]
+ (https://github.com/trackmania-rl/tmrl)
  
