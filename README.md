@@ -139,6 +139,7 @@ ________________________________________________________________________________
 ____________________________________________________________________________________
 ## FOUNDATIONS 
 <details><summary>Get details</summary>
+
 ### General overview:
 
 1) Model-based (focus on transition function between states, tough to go from model to actual policy)
@@ -207,6 +208,7 @@ This is usually done simultaneously, but it might be useful to first learn value
 
 </details>
 ____________________________________________________________________________________
+
 ## RESEARCH, REFERENCES AND LIBRARIES
 
  [^1:] [Sutton&Barto - Reinforcement Learning](https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
