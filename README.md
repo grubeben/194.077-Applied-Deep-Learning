@@ -138,6 +138,7 @@ ________________________________________________________________________________
 ## Sum of steps: *planned* ~80h
 ____________________________________________________________________________________
 ## FOUNDATIONS 
+<details><summary>Get details</summary>
 ### General overview:
 
 1) Model-based (focus on transition function between states, tough to go from model to actual policy)
@@ -204,6 +205,7 @@ This is usually done simultaneously, but it might be useful to first learn value
 * Agent can learn stochastic policies ==> There are simply grid world situations where deterministic policies cannot distinguish seemingly equal states and the agent will end up in a deadlock. Random movement in such an undistinguishable state might be better here. Sencond exmample: Pokergame (we might want to include stochastic actions in order to decrease predictability)
 * Agent can learn appropriate levels of exploration (probability for randomness can be different in every state, which isn't possible in value-based policies)
 
+</details>
 ____________________________________________________________________________________
 ## RESEARCH, REFERENCES AND LIBRARIES
 
@@ -213,7 +215,7 @@ ________________________________________________________________________________
  
  [^3:] [Asynchronous Methods for Deep Reinforcement Learning](https://paperswithcode.com/paper/asynchronous-methods-for-deep-reinforcement)
  
- [^4:] [Playing Atari with Deep Reinforcement Learning(https://paperswithcode.com/paper/playing-atari-with-deep-reinforcement)
+ [^4:] [Playing Atari with Deep Reinforcement Learning](https://paperswithcode.com/paper/playing-atari-with-deep-reinforcement)
  
  [^5:] [Track Mania Nations Reinforcement Framework](https://github.com/trackmania-rl/tmrl)
  
