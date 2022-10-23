@@ -1,18 +1,16 @@
 # 194.077-Applied-Deep-Learning
-Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents
+Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents based on the (RaceCarBullet environment?)
 ____________________________________________________________________________________
 ## IN A NUTSHELL
 
-Utilize two (very different) pygame environments to compare how value-based 
-vs. policy-based learning algorithms perform. This is with respect to policy
-(max. reward) and convergence. I will make hypotheses about why 
-I believe f.e. a DQN-agent will outperform an A2C on a certain game and the other way 
-around, build and train the agents and then analyse whether and why the hypotheses 
-holds (ot not).
+Utilize an environment that is suitable to both contionous state/action spaces and discretized ones in order to compare how value-based (which can handle the former)
+perform against policy-based learning algorithms (which cannot (at least not by conception)). This is with respect to policy
+(max. reward) and convergence. I will dive into theory and recent publications that offer guidance on the advantages to the two approaches,  implement an DQN-agent and an actor-critic-agent and then analyse how the results resonate with the theory.
 
 *Personal aim:*
-Use the course to broaden understanding of different approaches to reinforcement learning there are
-and how they relate to another.
+1) Use the course to broaden understanding of different approaches to reinforcement learning there are
+and how they relate to another
+2) Gain experience in slightly more complicated environment frameworks and in dealing with continous action / state spaces
 ____________________________________________________________________________________
 ## REMARKS REGARDING THE SCOPE
 
@@ -22,14 +20,6 @@ Understanding and correctly applying the algorithmic logic (synergy of multiple 
 (as in actor-critic)), connection to the environment and convergence analysis) will consume 
 the largest chunk of time, whereas really making the agents' brains (=neural networks) "deep" by applying 
 a larger number of layers will be treated as a optional bonus, depending on how well I progress.
-
-*Note:*
-If this proposal is not focussing enough on the "deep" learning
-side of events, please give me a nudge! In that case, I would alter towards the following: 
-Focus on one Reinforcement-algorithm (either value- or policy-based BUT definitely featuring a neural network), 
-build a basic version (not deep) and then try to enhance it by more accomplished and deeper network architectures for a specific 
-application (this would rank in the "beat the stars"-category).
-
 ____________________________________________________________________________________
 ## NECESSARY STEPS
 
@@ -39,11 +29,10 @@ ________________________________________________________________________________
  
 *planned:* 10h
  
-While I have written simple scripts that implement Q-learning and DQ-learning agents
-for applications like "Cart-Pole" and "Frozen Lake" (openai-gym), I have not come into contact with policy-based methods very intensively.
+While I have some experience with Q-learning and DQ-learning agents
+for applications like "Cart-Pole", "Frozen Lake" (openai-gym) and control tasks represented in a "Matlab Simulink" environmet, I have not implemented  policy-based methods.
 Sutton& Barto (2nd edition)[^1] has given me a theoretical idea about how these methods work
-and relate to the value-based ones, however I haven't fully understood the approach, specific methods
-and when their application is supposed to be favorable.
+and relate to the value-based ones, however I haven't understood the method in depth when it's application is favorable. I will compose a little introduction to policy-based methods to document the underlying theory [here](#foundations)
 
 </details>
 
@@ -66,15 +55,20 @@ in order to draw conclusions from the agent test runs.
 
 *planned:* 8h
 
+*Chooice: PyBullet implementation of RacecarBullet [^7]*
+
 Since I want to analyse the differences and areas of applicability of the different model approaches,
 rather then explore whether a certain application is realizable at all, I tend towards utilization
 of an open source environment. Such are:
-*DeepMind OpenSpiel and Control Suite (pysics-informed), Open AI Gym, TensorFlow TF-Agents, (Meta AI ReAgent), (pygame)*
-The evironments satisfy easy integrability,
-allow custom definition of rewards and games are a great way to visualize policies and deduce clues from the agent's behaviour. Some of the frameworks (DeepMind) even include analytical tools (for convergence etc.)
 
-Most interesting are OpenAIgym Atari suite for discrete action spaces and the MuJoCo environments (both by OpenAIgym and the Deepmind ControlSuite) for contiuous ones.
+*DeepMind OpenSpiel and Control Suite (pysics-informed), PyBullet, Open AI Gym, TensorFlow TF-Agents, (Meta AI ReAgent), (pygame)*
+
+The evironments satisfy easy integrability,
+allow custom definition of rewards and games are a great way to visualize policies and deduce clues from the agent's behaviour. Some of the frameworks  include analytical tools (for convergence etc.)
+
+Most interesting appears the TF-Agent framework, since it is integrated with the tensorflow library, supports Collab use and holds are OpenAIgym Atari suite for discrete action spaces and the MuJoCo environments for contiuous ones. However, MuJoCo only offers a 30day-free-trail, which might be too short for my purpose. As an alternative I might fall backt to PyBullet, which is opensource.
  
+*Note:*
 I would have loved to use an exisitng TrackMania Nations [^5] framework in order to train a policy-based agent, however, the contributors suggest 5h training on a modern GPU (something I don't have access to) for acceptable results. I fear running the training on my CPU will lead either to timeouts (since the agent is learning online) or enourmous training sessions.
  
 </details>
@@ -85,7 +79,7 @@ I would have loved to use an exisitng TrackMania Nations [^5] framework in order
  
 *planned:* 15h
 
-Implement the agents and the connection to the environments. 
+Implement the agents and the connection to the environment. 
 </details>
 
 ### 5. Hacking time II 
@@ -93,7 +87,7 @@ Implement the agents and the connection to the environments.
  
   *planned:* 12h
   
-  Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function.
+ Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function.
 </details>
  
 ### 6. Analysis regarding policy performance and convergence 
@@ -211,7 +205,7 @@ This is usually done simultaneously, but it might be useful to first learn value
 * Agent can learn appropriate levels of exploration (probability for randomness can be different in every state, which isn't possible in value-based policies)
 
 ____________________________________________________________________________________
-## RESEARCH AND OTHER REFERENCES
+## RESEARCH, REFERENCES AND LIBRARIES
 
  [^1:] [Sutton&Barto - Reinforcement Learning] (https://inst.eecs.berkeley.edu/~cs188/sp20/assets/files/SuttonBartoIPRLBook2ndEd.pdf)
  
@@ -225,3 +219,8 @@ ________________________________________________________________________________
  [^5:] [Track Mania Nations Reinforcement Framework]
  (https://github.com/trackmania-rl/tmrl)
  
+ [^6:] [Continuous-action Reinforcement Learning for
+Playing Racing Games: Comparing SPG to PPO]
+(https://arxiv.org/pdf/2001.05270v1.pdf)
+ 
+ [^7:] [PyBullet docu](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA/edit#heading=h.2ye70wns7io3)
