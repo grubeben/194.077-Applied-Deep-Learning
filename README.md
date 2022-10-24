@@ -55,7 +55,7 @@ in order to draw conclusions from the agent test runs.
 
 *planned:* 8h
 
-*Chooice: PyBullet implementation of RacecarBullet [^7]*
+*Choice: PyBullet implementation of RacecarBullet [^7]*
 
 Since I want to analyse the differences and areas of applicability of the different model approaches,
 rather then explore whether a certain application is realizable at all, I tend towards utilization
