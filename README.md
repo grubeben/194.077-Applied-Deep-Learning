@@ -87,7 +87,7 @@ Implement the agents and the connection to the environment.
  
   *planned:* 12h
   
- Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function.
+ Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function, maybe experiment with auxiliary tasks.
 </details>
  
 ### 6. Analysis regarding policy performance and convergence 
@@ -104,7 +104,7 @@ find a way to measure change in policy from one episode to later ones.
  
  *planned:* 12h
  
- Make version with deep NNs.
+Try to achieve further policy improvement optimizing the NN-architecture (add layers etc.).
 </details>
 
 ### 8. Results 
