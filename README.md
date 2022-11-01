@@ -1,6 +1,20 @@
 # 194.077-Applied-Deep-Learning
-Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents based on the (RaceCarBullet environment?)
+Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents based (on the RaceCarBullet environment)
 ____________________________________________________________________________________
+## Revision after feedback
+
+In order to enable clear focus on every of the steps, I will prioritize implementing an A2C- agent and then and and only then work on a DQN-agent and the comparitive aspects of the project. Hence, the project outcome shall definitely be:
+
+1) Implementation of a working A2C- agent
+2) Employment of the agent in a PyBullet environment
+
+I will treat the following as bonus (whether time will suffice to execute these will become celar along the way):
+
+3) Implementation of a DQ- agent for the same use case
+4) Comparison of convergence and policy quality between the two agents
+
+Note that this will affect the order of the tasks below. Those that are not essential to the "must have" goals are marked with (BONUS).
+___________________________________________________________________________________
 ## IN A NUTSHELL
 
 Utilize an environment that is suitable to both contionous state/action spaces and discretized ones in order to compare how value-based (which can handle the former)
@@ -12,7 +26,7 @@ perform against policy-based learning algorithms (which cannot (at least not by 
 and how they relate to another
 2) Gain experience in slightly more complicated environment frameworks and in dealing with continous action / state spaces
 ____________________________________________________________________________________
-## REMARKS REGARDING THE SCOPE
+## SCOPE
 
 Since the methodical framework around agent-building is pretty complex on it's own (at least to me) the 
 focus will be less on the "deep" part of deep reinforcement learning. What i mean by this is:
@@ -37,7 +51,7 @@ and relate to the value-based ones, however I haven't understood the method in d
 </details>
 
 
-### 2. Establish hypothesis and decide on comparisson parameters 
+### 2. (BONUS) Establish hypothesis and decide on comparisson parameters 
 
 <details><summary>Get details</summary>
  
@@ -49,7 +63,7 @@ in order to draw conclusions from the agent test runs.
  
 </details>
 
-### 3. Check suitability and decide on environments  
+### 3. Check suitability and decide on environment
 
 <details><summary>Get details</summary>
 
@@ -79,7 +93,7 @@ I would have loved to use an exisitng TrackMania Nations [^5] framework in order
  
 *planned:* 15h
 
-Implement the agents and the connection to the environment. 
+Implement the A2C- agent and the connection to the environment. 
 </details>
 
 ### 5. Hacking time II 
@@ -87,24 +101,25 @@ Implement the agents and the connection to the environment.
  
   *planned:* 12h
   
- Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function, maybe experiment with auxiliary tasks.
+Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ prepefined state export from reinforcement- evironment?). Experiment and define a final reward function, maybe experiment with auxiliary tasks.
 </details>
  
-### 6. Analysis regarding policy performance and convergence 
-<details><summary>Get details</summary>
- 
- *planned:* 6h
-
-Train agents and lock convergence.
-find a way to measure change in policy from one episode to later ones.
-</details>
 
 ### 7. (BONUS) Hacking time III 
 <details><summary>Get details</summary>
  
  *planned:* 12h
+ Implement DQ- agent.
  
-Try to achieve further policy improvement optimizing the NN-architecture (add layers etc.).
+</details>
+
+### 6. Analysis regarding policy performance and convergence / (BONUS) comparative study
+<details><summary>Get details</summary>
+ 
+ *planned:* 10h
+
+Train agent and lock convergence.
+find a way to measure change in policy from one episode to later ones.
 </details>
 
 ### 8. Results 
@@ -133,7 +148,6 @@ demonstrate significant pecularities of the respective agent
 
 </details>
 
-*Note:* steps 1) to 3) will run in parallel.
 _____________________________________________________________________________________
 ## Sum of steps: *planned* ~80h
 ____________________________________________________________________________________
