@@ -26,15 +26,6 @@ perform against policy-based learning algorithms (which cannot (at least not by 
 and how they relate to another
 2) Gain experience in slightly more complicated environment frameworks and in dealing with continuous action / state spaces
 ____________________________________________________________________________________
-## SCOPE
-
-Since the methodical framework around agent-building is pretty complex on its own (at least to me) the 
-focus will be less on the "deep" part of deep reinforcement learning. What I mean by this is:
-Understanding and correctly applying the algorithmic logic (synergy of multiple networks
-(actor-critic)), connection to the environment and convergence analysis) will consume 
-the largest chunk of time, whereas really making the agents' brains (=neural networks) "deep" by applying 
-a larger number of layers will be treated as an optional bonus, depending on how well I progress.
-____________________________________________________________________________________
 ## NECESSARY STEPS
 
 ### 1. Solidify understanding about policy-based methods
@@ -178,7 +169,7 @@ sigma: NN-weights
 
 5) We want to make 4) useful for sequential rewards. Turns out the Policy Gradient Theorem states that we can just replace the R in the update-formula for with the value function v.
 
-6) We now introduce baselines in order to reduce variance in the update: Let's introduce the baseline function $b(s)$ (which doesn't depend on the action) and hence can be subtracted from the return. We define b to be the Monte Carlo return (=average reward over whole episode). The latter can be estimated by TF (=critic)
+6) We now introduce baselines in order to reduce variance in the update: Let's introduce the baseline function $b(s)=V(s)$ (which doesn't depend on the action).We define b to be the Monte Carlo return (=average reward over whole episode). The advantage is defined as $Q(s,a)-V(s)=R_{t+1}+gamma*V_{s+1}-V_{s}$. The latter can be estimated by TD learning (=critic)
 
 #### Actor-Critic[^3]
 on policy
