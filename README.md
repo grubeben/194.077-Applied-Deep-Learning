@@ -212,16 +212,24 @@ ________________________________________________________________________________
 ## A2C: Architecture and Implementation
 <details><summary>Get details</summary>
 
-What need our cooking recipy hold?
+### Elements we need
  
 1) State representation: $S_t$. Does not only have to be the current observation, but maybe also the prior state (=recurrent network?) $(S_{t-1},O_t)->S_t$
 
 2) 2NNs: value- and a policy network (critic(w) and actor(theta)) $S -> v$, $S -> pi$
 
-3) loss functions: 
-   critic: We want $TD=R_{t+1}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
+3) Loss functions: 
  
-   actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_i)*log_prob(a_i)
+   Critic: We want $TD=R_{t+1}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
+ 
+   Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_i)*log_prob(a_i)
+ 
+### Classes and files 
+ 
+ 1) **agent()** define networks, updates, policy-saving
+ 
+ 2) **main()** initiate environemnt, training and visualisation
+ 
 ___________________________________________________________________________________
 </details>
 
