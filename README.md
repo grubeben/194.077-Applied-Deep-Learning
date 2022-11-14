@@ -28,6 +28,8 @@ and how they relate to another
 ____________________________________________________________________________________
 ## NECESSARY STEPS
 
+<details><summary>Get details</summary>
+
 ### 1. Solidify understanding about policy-based methods
 
 <details><summary>Get details</summary>
@@ -138,7 +140,7 @@ Make a comparing demonstration of policies in action for the respective game. If
 demonstrate significant peculiarities of the respective agent 
 
 </details>
-
+</details>
 _____________________________________________________________________________________
 ## Sum of steps: *planned* ~80h
 ____________________________________________________________________________________
