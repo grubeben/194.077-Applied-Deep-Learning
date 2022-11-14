@@ -169,10 +169,11 @@ sigma: NN-weights
 3) Now that we have set the objective, we need to optimize the policy in a way to fulfill our demand. Gradient accent is useful (since we want to find a maximum): $delta(theta)=gradient_{theta}(J(theta))$
 
 4) How to estimate the gradient? It might sound natural to sample from the policy, obtain a reward R and derive R with respect to all $theta_i$. However, that's not possible since R is a numeric value. Instead we use mathematical identity that allows to build the gradient over the expected reward instead of the the expected gradient of the reward (see Sutton&Barto page 325). This is called "score function trick"
-
-5) We want to make 4) useful for sequential rewards. Turns out the Policy Gradient Theorem states that we can just replace the R in the update-formula for with the value function v.
+ 
+5) We want to make 4) useful for sequential rewards and get rid of the sum. Turns out that we can adapt the update-formula in a way that rids of of the quality function and only uses the reward instead. (p.327) The Gradient theorem states now that we can replace the reward with the value function v.
 
 6) We now introduce baselines in order to reduce variance in the update: Let's introduce the baseline function $b(s)=V(s)$ (which doesn't depend on the action).We define b to be the Monte Carlo return (=average reward over whole episode). The advantage is defined as $Q(s,a)-V(s)=R_{t+1}+gamma*V_{s+1}-V_{s}$. The latter can be estimated by TD learning (=critic)
+
 
 #### Actor-Critic[^3]
 on policy
@@ -182,17 +183,7 @@ Critic: learns value; updates w
 "Advantage"-A2C: state has a value(=b) and state-action has a value, if we subtract b, the advantage of taking action a remains.
 
 This is usually done simultaneously, but it might be useful to first learn value-function well, before starting to learn to policy.
-
-### Architecture
-
-1) representation: defines what defines the current state $S_t$. Does not only have to be the current observation, but maybe also the prior state (=recurrent network?) $(S_{t-1},O_t)->S_t$
-
-2) value and policy networks (critic and actor) $S -> v$, $S -> pi$
-
-3) n-step TD loss on v.
-
-4) (min 1:16 [^2])we might have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken.
-
+ 
 *Notes:* 
 * if we let multiple agents explore multiple instances of the same environment and let dem update the shared policy asynchronously training time can be decreased and effects in a single agent can be averaged out. This is called A3C.
 * We need on policy targets (from that exact same step), off policy will introduce bias
@@ -213,9 +204,24 @@ This is usually done simultaneously, but it might be useful to first learn value
 * Agent can naturally handle continuous action spaces
 * Agent can learn stochastic policies ==> There are simply grid world situations where deterministic policies cannot distinguish seemingly equal states and the agent will end up in a deadlock. Random movement in such an undistinguishable state might be better here. Second example: Pokergame (we might want to include stochastic actions in order to decrease predictability)
 * Agent can learn appropriate levels of exploration (probability for randomness can be different in every state, which isn't possible in value-based policies)
-
+ 
 ____________________________________________________________________________________
 
+</details>
+
+## A2C: Architecture and Implementation
+<details><summary>Get details</summary>
+
+What need our cooking recipy hold?
+ 
+1) State representation: $S_t$. Does not only have to be the current observation, but maybe also the prior state (=recurrent network?) $(S_{t-1},O_t)->S_t$
+
+2) 2NNs: value- and a policy network (critic(w) and actor(theta)) $S -> v$, $S -> pi$
+
+3) loss functions: 
+   critic: We want $TD=R_{t+1}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
+   actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_i)*log_prob(a_i)
+___________________________________________________________________________________
 </details>
 
 ## RESEARCH, REFERENCES AND LIBRARIES
