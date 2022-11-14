@@ -140,6 +140,7 @@ Make a comparing demonstration of policies in action for the respective game. If
 demonstrate significant peculiarities of the respective agent 
 
 </details>
+ 
 </details>
 _____________________________________________________________________________________
 ## Sum of steps: *planned* ~80h
