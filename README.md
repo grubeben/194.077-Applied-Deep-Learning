@@ -220,6 +220,7 @@ What need our cooking recipy hold?
 
 3) loss functions: 
    critic: We want $TD=R_{t+1}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
+ 
    actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_i)*log_prob(a_i)
 ___________________________________________________________________________________
 </details>
