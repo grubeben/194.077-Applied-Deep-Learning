@@ -212,17 +212,29 @@ ________________________________________________________________________________
 ## A2C: Architecture and Implementation
 <details><summary>Get details</summary>
 
-### Elements we need
+### Elements we need (for an n-step AA2C)
  
 1) State representation: $S_t$. Does not only have to be the current observation, but maybe also the prior state (=recurrent network?) $(S_{t-1},O_t)->S_t$
 
-2) 2NNs: value- and a policy network (critic(w) and actor(theta)) $S -> v$, $S -> pi$
+2) The 2 NNs: value- and a policy network (critic(w) and actor(theta)) $S -> v$, $S -> pi$
 
-3) Loss functions: 
+3) Loss functions (for 1-step AAC and two seperate NNs): 
  
-   Critic: We want $TD=R_{t+1}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
+   Critic: We want $TD=R_{t}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
  
-   Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_i)*log_prob(a_i)
+   Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_t)*log_prob(a_t)$
+   
+4) Loss functions (for n-step AAC and a shared NN): 
+4.1) Critic loss: $MSE(V(s),R_{t}+gamma*R_{t+1}+..+gamma^{n-1}*R_{t+n-1}+gamma^{n}*V_{s+n}$
+
+4.2) Actor loss: $\sum{A(s,a_t)*log_prob(a_t)}$ with the sum over $t=0,..,n-1$
+
+!NOTE!: Instead of creating two entirely seperate NNs we just use one with two outlet channels (only the last layer weights decide whether we obtain P(s,a) or V(s)). What does this mean for the loss function?
+
+We just add them together!
+$loss=loss_{actor}+loss_{critic}*weight_{critic}$
+Or if we want to penalise $\sum{P(a_{chosen})-P(a_{i})}$ == unclear decisions:
+$loss_{i.entropy}=loss_{actor}+loss_{critic}*weight_{critic}-loss_{entropy}*weight_{entropy}$
  
 ### Classes and files 
  
