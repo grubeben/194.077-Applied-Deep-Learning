@@ -264,7 +264,11 @@ to define performance in terms of the average rate of reward per time step" [^1]
  
  2) **main()** initiate environemnt, training and visualisation
  
- 
+ ## TODOS
+ *understand tf visualizer
+ *implement method to save weights
+ *try mitch activation instead of tanh
+
 ___________________________________________________________________________________
 </details>
 
