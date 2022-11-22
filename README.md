@@ -237,11 +237,17 @@ If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s), we ad
  1) initialize $s_0$
  2) initialize trace vectors (storage units for store $r_t,..,r_{t+n} and $V_t,..,V_{t+n}$
  3) Loop while $s_t$ is not terminal
+ 
  3.1) compute action propabilities $probs_a=pi(.|s)$
+ 
  3.2) choose action $a_t$ by randomly sampling from distribution
+ 
  3.3) take action $a_t$, observe $r,s_{t+1}
+ 
  3.4) append $r_t$ $V_t$ to trace vectors
+ 
  3.5) if len(trace vectors)== batch.size: perform weight update in NN; clear trace vectors
+ 
  3.6) $s_t$=$s_{t+1}$
  
 #### adapting for continuing problems (such as the BulletHopper)
