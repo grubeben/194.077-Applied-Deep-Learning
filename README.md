@@ -270,9 +270,12 @@ to define performance in terms of the average rate of reward per time step" [^1]
  *try mitch activation instead of tanh
 
 ## DONES
-*set up agent for CartPole and make converge
-*set up NN weights saving and loading option
-*set up Tensorboard
+1) set up agent for CartPole and make converge
+ ==> works well with 200 episodes (scores: around 200), but after massive decrease: catastrophic forgetting
+ Something very similar happens in your DQN experience replay memory. Once it gets good at a task, it may only experience success. Eventually, only successful examples are in its memory. The NN forgets what failure looks like (what the states are, and what it should predict for their values), and predicts high values for everything. An idea would be: keep aside some percentage of replay memory stocked with the initial poor performing random exploration.
+ 
+2) set up NN weights saving and loading option
+3) set up Tensorboard
 
 ___________________________________________________________________________________
 </details>
