@@ -272,6 +272,7 @@ to define performance in terms of the average rate of reward per time step" [^1]
 ## DONES
 *set up agent for CartPole and make converge
 *set up NN weights saving and loading option
+*set up Tensorboard
 
 ___________________________________________________________________________________
 </details>
