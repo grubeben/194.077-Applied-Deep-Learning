@@ -269,6 +269,10 @@ to define performance in terms of the average rate of reward per time step" [^1]
  *implement method to save weights
  *try mitch activation instead of tanh
 
+## DONES
+*set up agent for CartPole and make converge
+*set up NN weights saving and loading option
+
 ___________________________________________________________________________________
 </details>
 
