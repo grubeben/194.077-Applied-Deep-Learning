@@ -14,8 +14,6 @@ import glob
 import shutil
 import json
 
-#continuous task https://github.com/hill-a/stable-baselines/blob/master/stable_baselines/a2c/a2c.py
-
 class A2CAgent(keras.Model):
 
     """__CONSTRUCTOR__"""
@@ -71,20 +69,41 @@ class A2CAgent(keras.Model):
     # def pseudo_entropy_loss(self,policy_logits): # let's penalize large sigma?
     #     return -(keras.losses.categorical_crossentropy(policy_logits,policy_logits, from_logits=True) * self.entropy_loss_weight)
 
-    def actor_loss(self,combined,_):
+    def actor_loss_mu(self,combined,mu):
+        loss=0
+        action = combined[:, 0]  # first column holds a_t
+        advantage = combined[:, 1]  # second column holds A_t
+        sigma = combined[:, 3] 
+        norm_dists=tfp.distributions.Normal(mu,sigma)
+        loss= -tf.math.log(norm_dists.prob(action)*advantage)
+        loss= tf.math.reduce_mean(loss)
+
+        # for i in range(len(combined)):
+        #     action = combined[i, 0]  # first column holds a_t
+        #     advantage = combined[i, 1]  # second column holds A_t
+        #     #mu = mu_sigma[i, 0] 
+        #     sigma = combined[i, 3] 
+        #     norm_dists=tfp.distributions.Normal(mu[i][0],sigma)
+        #     loss+= -tf.math.log(norm_dists.prob(action)*advantage)
+        #     print ("\n", mu[i][0],sigma,"\n")
+        # loss= tf.math.reduce_mean(loss)
+        
+        print("\n\n", loss, "\n\n")
+        return loss * self.actor_loss_weight
+
+    def actor_loss_sigma(self,combined,sigma):
         loss=0
 
-        for i in range(len(combined[:, 0])):
+        for i in range(len(combined)):
             action = combined[i, 0]  # first column holds a_t
             advantage = combined[i, 1]  # second column holds A_t
             mu = combined[i, 2] 
-            sigma = combined[i, 3] 
-            norm_dists=tfp.distributions.Normal(mu,sigma)
+            norm_dists=tfp.distributions.Normal(mu,sigma[i])
             loss+= -tf.math.log(norm_dists.prob(action)*advantage)
         loss= tf.math.reduce_mean(loss)
         
         print("\n\n", loss, "\n\n")
-        return loss * self.actor_loss_weight
+        return loss * self.actor_loss_weight    
 
     """NN methods"""
 
@@ -97,11 +116,11 @@ class A2CAgent(keras.Model):
         sigma = self.my_weight_dict["sigma_inbetween"](x)
         sigma = self.my_weight_dict["sigma"](sigma)
 
-        return value, mu, sigma
+        return value, mu,sigma #shallow structure
 
     def action_value(self, state):  # pass state through NN and choose action
         value, mu, sigma = self.predict_on_batch(state)  # runs call() from above
         norm_dist=tfp.distributions.Normal(mu,sigma)
         action = tf.squeeze(norm_dist.sample(1), axis=0) #sample from prob distribution and remove batch dimension
         action = tf.clip_by_value(action, self.action_space_low, self.action_space_high) #fit into action space
-        return action, value, mu,sigma
+        return action, value, mu, sigma
