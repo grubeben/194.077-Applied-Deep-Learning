@@ -35,7 +35,7 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
     model = a2cc.A2CAgent(s0, act_space_high, act_space_low, 4, use_existing_policy)
     # compile NN with inherited keras-method
     model.compile(optimizer=keras.optimizers.Adam(), loss=[
-                  model.critic_loss, model.actor_loss])
+                  model.critic_loss, model.actor_loss_mu, model.actor_loss_sigma])
     # load weights from existing model
     if use_existing_policy == True:
         # print("\n\n")
@@ -77,8 +77,9 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
         dones = []
         for i in range(model.batch_size):
             # obtain action distibution
-            _,_,_ = model(s.reshape(1, -1))
-            a_t, V_t, mu,sigma = model.action_value(s.reshape(1, -1))  # choose action
+            _,_,_= model(s.reshape(1, -1))
+            a_t, V_t, mu,sigma= model.action_value(s.reshape(1, -1))  # choose action
+            #a_t, V_t= model.action_value(s.reshape(1, -1))  # choose action
             s_new, reward, done, _ = env.step(a_t.numpy())  # make step
             actions.append(a_t.numpy()[0])  # append trace vectors
             values.append(V_t[0][0])
@@ -123,11 +124,16 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
         #combined=np.array(combined)
 
         combined = []
+        combined_dist = []
         for i in range(len(actions)):
             combined.append([actions[i][0],advantages[i],mus[i][0][0],sigmas[i][0][0]])
+            #combined_dist.append([mus[i][0][0],sigmas[i][0][0]])
+            
         combined=np.array(combined)
+        #combined_dist=np.array(combined_dist)
 
         print("\n\n", combined, "\n\n")
+        #print("\n\n", combined_dist, "\n\n")
         # cperform NN update with keras method and obtain loss
         # discounted_rewards are used for the critic update, combined=[a_t, A_t] for the actor
         #print("\n\n", tf.shape(tf.stack(states)), "\n\n")
@@ -135,7 +141,7 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
         #print("\n\n", states, "\n\n")
 
         loss = model.train_on_batch(
-            tf.stack(states), [discounted_rewards, combined])
+            tf.stack(states), [discounted_rewards, combined, combined])
 
         print("\n\n", loss, "\n\n")
         
