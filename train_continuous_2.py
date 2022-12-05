@@ -12,33 +12,53 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
 
-import a2cagent
+import a2cagent_continuous_2 as a2cc
+import continuous_cartpole as continuous_cartpole
 
-# "CartPole-v1": set sct_dim=2 manually;  "CartPoleBulletEnv-v1": get rid of return_info arg; "HopperBulletEnv-v0"
 
+def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_layer=False, use_existing_policy=False, state_normalization=False, batch_normalization=False, specification=""):
+    # check for custom CARTPOLE ENV
+    custom_cart = False
+    if (env_str == "ContinuousCartPoleEnv"):
+        custom_cart = True
 
-def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, specification=""):
     # load environment
-    env = gym.make(env_str) 
-    s0 = env.reset(return_info=False)
+    env = None
+    if (custom_cart == True):
+        env = continuous_cartpole.ContinuousCartPoleEnv()
+    else:
+        env = gym.make(env_str)
+    #s0 = env.reset(return_info=False)
     s0 = env.reset()
-    
-    obs_dim = env.observation_space.shape[0]
-    act_dim = env.action_space
-    act_dim = 2
 
-    # initiate agent
-    model = a2cagent.A2CAgent(
-        s0, act_dim, obs_dim, use_existing_policy)
+    #act_dim = 2
+    act_space_low = env.action_space.low[0]
+    act_space_high = env.action_space.high[0]
+    obs_dim = env.observation_space.shape[0]
+
+    # state normalisation
+    state_space_samples = np.array(
+        [env.observation_space.sample() for x in range(6400)])
+    if (env_str == "CartPoleContinuousBulletEnv-v0" or custom_cart == True):
+        # method does not yield reasonable results for pybullet env, so we load some historical state data
+        state_space_samples = np.loadtxt(os.getcwd()+"/obs-samples/norm_a.txt")
+
+    # for i in range(1000):
+    #     print(state_space_samples[i], "\n")
+
+    # initiate agent 
+    model = a2cc.A2CAgent(s0, act_space_high, act_space_low, state_space_samples, obs_dim, state_normalization, batch_normalization,
+                          use_existing_policy, add_branch_layer)
     # compile NN with inherited keras-method
+    # added gradient clipping #clipvalue=0.5 #clipnorm=1.0 
     model.compile(optimizer=keras.optimizers.Adam(), loss=[
                   model.critic_loss, model.actor_loss])
     # load weights from existing model
     if use_existing_policy == True:
-        #print("\n\n")
+        # print("\n\n")
         # string in format 'A2C281120221423CartPole-v1_mish'
         policy = input(
-            "insert directory cooresponding to policy from which to start from:")
+            "insert directory corresponding to policy from which to start from:")
         model.train_on_batch(tf.stack(np.zeros((model.batch_size, model.obs_dim))), [
                              np.zeros((model.batch_size, 1)), np.zeros((model.batch_size, 2))])
         model.load_weights(model.my_path+'/training/models/' + policy+"/")
@@ -49,14 +69,14 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
         # model.load_weights(filename)
 
     # set up ModelCheckpoint
-    model.model_path = model.my_path+'/training/models' + \
+    model.model_path = model.my_path+'/training_continuous/models' + \
         f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}" + \
         env_str+'_'+specification+'/'
     os.makedirs(model.model_path)
 
     # set up TensorBoard to visualize progress
     train_writer = tf.summary.create_file_writer(
-        model.my_path + '/training/tensorboard'+f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}"+env_str+"_"+specification)
+        model.my_path + '/training_continuous/tensorboard'+f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}"+env_str+"_"+specification)
 
     # main training loop
     episode_reward_sum = 0
@@ -72,7 +92,7 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
         dones = []
         for i in range(model.batch_size):
             # obtain action distibution
-            _, policy_logits = model(s.reshape(1, -1))
+            _, _ = model(s.reshape(1, -1))
             a_t, V_t = model.action_value(s.reshape(1, -1))  # choose action
             s_new, reward, done, _ = env.step(a_t.numpy()[0])  # make step
             actions.append(a_t.numpy()[0])  # append trace vectors
@@ -82,14 +102,15 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
             episode_reward_sum += reward
 
             s = s_new
-            #print(s)
+            # print("\n",s)
 
             # handle end of episode
             if done:
                 rewards.append(0.0)
                 s = env.reset()
                 # loss will be 0 for first batch
-                print(f"Episode: {episode}, latest episode reward: {episode_reward_sum}, loss: {loss}")
+                print(
+                    f"Episode: {episode}, latest episode reward: {episode_reward_sum}, loss: {loss}")
                 with train_writer.as_default():
                     tf.summary.scalar('rewards', episode_reward_sum, episode)
 
@@ -106,18 +127,27 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
         _, next_value = model.action_value(s.reshape(1, -1))
         discounted_rewards, advantages = model.discounted_rewards_advantages(
             rewards, values, next_value[0][0], dones)  # compute input for NN update
+
         # bring actions chosen and advantages into shape that keras method can work with
-        combined = np.zeros((len(actions), 2))
-        combined[:, 0] = actions
-        combined[:, 1] = advantages
-        # cperform NN update with keras method and obtain loss
-        # discounted_rewards are used for the critic update, combined=[a_t, A_t] for the actor
-        #print("\n\n", tf.shape(tf.stack(states)),"\n\n")
-        #print("\n\n",combined,"\n\n")
+        combined = []
+        for i in range(len(actions)):
+            combined.append([actions[i][0], advantages[i]])
+            # combined_dist.append([mus[i][0][0],sigmas[i][0][0]])
+
+        combined = np.array(combined)
+        # combined_dist=np.array(combined_dist)
+        #print("\n\n", combined, "\n\n")
+
+        #print("\n update")
         loss = model.train_on_batch(
-            tf.stack(states), [discounted_rewards, combined], return_dict=False)
+            tf.stack(states), [discounted_rewards, combined])
+
         with train_writer.as_default():
             tf.summary.scalar('tot_loss', np.sum(loss), step)
 
+
 if __name__ == "__main__":
-    train(num_batches=300, specification="mish", use_existing_policy=False)
+
+    # "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1",  "HopperBulletEnv-v0", "(LunarLanderContinuous-v2")
+    train(num_batches=2000, env_str="MountainCarContinuous-v0",
+          specification="mish", add_branch_layer=False, state_normalization=True, batch_normalization=False, use_existing_policy=False)

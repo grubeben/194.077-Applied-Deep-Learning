@@ -209,54 +209,20 @@ ________________________________________________________________________________
 
 </details>
 
-## Architecture and Implementation
+## A2C: Architecture and Implementation
 <details><summary>Get details</summary>
 
-### Elements we need for an n-step AAC:
+### Elements we need
  
 1) State representation: $S_t$. Does not only have to be the current observation, but maybe also the prior state (=recurrent network?) $(S_{t-1},O_t)->S_t$
 
 2) 2NNs: value- and a policy network (critic(w) and actor(theta)) $S -> v$, $S -> pi$
 
-3) Loss functions (for 1-step AA2C): 
+3) Loss functions: 
  
-   3.1) Critic: We want $TD=R_{t}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
+   Critic: We want $TD=R_{t+1}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
  
-   3.2) Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_t)*log_prob(a_t|s_t)$
-   
-4) Loss functions (for n-step AAC): 
-  4.1) Critic: $R_{t}+R_{t+1}*gamma+ .. +R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
-  4.2) Actor:$\sum{log_prob(a_t|s_t)}*A(s,a_t)$  for $t=t,..,t+n$
-
-!NOTE!: In order to enable more efficient training and computations we will use only. Only the last network layer will be different in order to faciliate propability or value output. But what does this mean for the loss functions? We simply sum them up!
-
-If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s), we add a termin for the Entropy-loss
-
-### Algorithm
-#### for ending problems (such as the PoleCart, which terminates once the stick is inclined too far to one side)
- 1) initialize $s_0$
- 2) initialize trace vectors (storage units for store $r_t,..,r_{t+n} and $V_t,..,V_{t+n}$
- 3) Loop while $s_t$ is not terminal
- 
- 3.1) compute action propabilities $probs_a=pi(.|s)$
- 
- 3.2) choose action $a_t$ by randomly sampling from distribution
- 
- 3.3) take action $a_t$, observe $r,s_{t+1}
- 
- 3.4) append $r_t$ $V_t$ to trace vectors
- 
- 3.5) if len(trace vectors)== batch.size: perform weight update in NN; clear trace vectors
- 
- 3.6) $s_t$=$s_{t+1}$
- 
-#### adapting for continuing problems (such as the BulletHopper)
- "for continuing problems without episode boundaries we need
-to define performance in terms of the average rate of reward per time step" [^1]
- 
- Whhy and what exactly does that mean?
- 
- 
+   Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_i)*log_prob(a_i)
  
 ### Classes and files 
  
@@ -264,19 +230,6 @@ to define performance in terms of the average rate of reward per time step" [^1]
  
  2) **main()** initiate environemnt, training and visualisation
  
- ## TODOS
-1) understand tf visualizer
-2) implement method to save weights
-3) try mish/ swish activation instead of tanh or relu: https://iq.opengenus.org/activation-functions-ml/
-
-## DONES
-1) set up agent for CartPole and make converge
- ==> works well with 200 episodes (scores: around 200), but after massive decrease: catastrophic forgetting
- Something very similar happens in your DQN experience replay memory. Once it gets good at a task, it may only experience success. Eventually, only successful examples are in its memory. The NN forgets what failure looks like (what the states are, and what it should predict for their values), and predicts high values for everything. An idea would be: keep aside some percentage of replay memory stocked with the initial poor performing random exploration.
- 
-2) set up NN weights saving and loading option
-3) set up Tensorboard
-
 ___________________________________________________________________________________
 </details>
 

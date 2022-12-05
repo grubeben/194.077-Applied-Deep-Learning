@@ -64,19 +64,38 @@ class A2CAgent(keras.Model):
 
     """losses"""
     def critic_loss(self,discounted_rewards, predicted_values):
-        return keras.losses.mean_squared_error(discounted_rewards, predicted_values) * self.critic_loss_weight
+        loss= keras.losses.mean_squared_error(discounted_rewards, predicted_values) * self.critic_loss_weight
+        print("\n\n", loss, "\n\n")
+        return loss
 
     # def pseudo_entropy_loss(self,policy_logits): # let's penalize large sigma?
     #     return -(keras.losses.categorical_crossentropy(policy_logits,policy_logits, from_logits=True) * self.entropy_loss_weight)
 
-    def actor_loss_mu(self,combined,mu):
+    def actor_loss_mu(self,combined,_): # let call predict new mu
         loss=0
-        action = combined[:, 0]  # first column holds a_t
-        advantage = combined[:, 1]  # second column holds A_t
+        # action = combined[:, 0]  # first column holds a_t
+        # advantage = combined[:, 1]  # second column holds A_t
+        # mu = combined [:,2]
+        # sigma = combined[:, 3] 
+        # norm_dists=tfp.distributions.Normal(mu,sigma)
+        # print("\n\n", norm_dists, "\n\n")
+        # policy_loss= -tf.math.log(norm_dists.prob(action)*advantage)
+        # print("\n\n", loss, "\n\n")
+        # policy_loss= tf.math.reduce_mean(loss)
+
+        actions = combined[:, 0]  # first column holds a_t
+        advantages = combined[:, 1]  # second column holds A_t
+        mu = combined [:,2]
         sigma = combined[:, 3] 
         norm_dists=tfp.distributions.Normal(mu,sigma)
-        loss= -tf.math.log(norm_dists.prob(action)*advantage)
-        loss= tf.math.reduce_mean(loss)
+        probs=tf.math.log(norm_dists.prob(actions))
+
+        mse= keras.losses.MeanSquaredError(reduction=keras.losses.Reduction.SUM)
+        actions = tf.cast(actions, tf.int32)
+        loss= mse(actions, probs, sample_weight=advantages)
+        print("\n\n", loss, "\n\n")
+
+        return loss * self.actor_loss_weight
 
         # for i in range(len(combined)):
         #     action = combined[i, 0]  # first column holds a_t
@@ -88,17 +107,16 @@ class A2CAgent(keras.Model):
         #     print ("\n", mu[i][0],sigma,"\n")
         # loss= tf.math.reduce_mean(loss)
         
-        print("\n\n", loss, "\n\n")
-        return loss * self.actor_loss_weight
 
-    def actor_loss_sigma(self,combined,sigma):
+    def actor_loss_sigma(self,combined,_):
         loss=0
 
         for i in range(len(combined)):
             action = combined[i, 0]  # first column holds a_t
             advantage = combined[i, 1]  # second column holds A_t
             mu = combined[i, 2] 
-            norm_dists=tfp.distributions.Normal(mu,sigma[i])
+            sigma = combined[i,3]
+            norm_dists=tfp.distributions.Normal(mu,sigma)
             loss+= -tf.math.log(norm_dists.prob(action)*advantage)
         loss= tf.math.reduce_mean(loss)
         
@@ -113,7 +131,7 @@ class A2CAgent(keras.Model):
         value= self.my_weight_dict["value"](x)
         mu=self.my_weight_dict["mu"](x)
 
-        sigma = self.my_weight_dict["sigma_inbetween"](x)
+        sigma = self.my_weight_dict["sigma_inbetween"](x) + 1e-5
         sigma = self.my_weight_dict["sigma"](sigma)
 
         return value, mu,sigma #shallow structure
@@ -124,3 +142,11 @@ class A2CAgent(keras.Model):
         action = tf.squeeze(norm_dist.sample(1), axis=0) #sample from prob distribution and remove batch dimension
         action = tf.clip_by_value(action, self.action_space_low, self.action_space_high) #fit into action space
         return action, value, mu, sigma
+
+    def scale_state(state):               
+
+        return scaled                         
+
+#https://github.com/rayush7/continuous_mountain_car_problem_actor_critic_rl_solution
+#https://github.com/andy-psai/MountainCar_ActorCritic/blob/master/RL%20Blog%20FINAL%20MEDIUM%20code%2002_12_19.ipynb
+# next: state space normalisation!
