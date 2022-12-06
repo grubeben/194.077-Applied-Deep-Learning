@@ -61,7 +61,7 @@ def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_laye
             "insert directory corresponding to policy from which to start from:")
         model.train_on_batch(tf.stack(np.zeros((model.batch_size, model.obs_dim))), [
                              np.zeros((model.batch_size, 1)), np.zeros((model.batch_size, 2))])
-        model.load_weights(model.my_path+'/training/models/' + policy+"/")
+        model.load_weights(model.my_path+'/training_continuous/models/' + policy+"/")
 
         """non WSL version"""
         # Tk().withdraw()
@@ -149,5 +149,5 @@ def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_laye
 if __name__ == "__main__":
 
     # "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1",  "HopperBulletEnv-v0", "(LunarLanderContinuous-v2")
-    train(num_batches=2000, env_str="MountainCarContinuous-v0",
-          specification="mish", add_branch_layer=False, state_normalization=True, batch_normalization=False, use_existing_policy=False)
+    train(num_batches=2000, env_str="ContinuousCartPoleEnv",
+          specification="", add_branch_layer=True, state_normalization=True, batch_normalization=True, use_existing_policy=False)

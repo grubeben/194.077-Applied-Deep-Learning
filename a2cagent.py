@@ -84,7 +84,7 @@ class A2CAgent(keras.Model):
         actions = tf.cast(actions, tf.int32)
         policy_loss = sparse_ce(actions, policy_logits, sample_weight=advantages)
 
-        return policy_loss * self.actor_loss_weight + self.entropy_loss(policy_logits) * self.entropy_loss_weight
+        return 0 #policy_loss * self.actor_loss_weight + self.entropy_loss(policy_logits) * self.entropy_loss_weight
 
     """NN methods"""
     # def call(self, inputs):  # pass state forward through NN

@@ -87,7 +87,7 @@ class A2CAgent(keras.Model):
         return loss
 
     def entropy_loss(self,norm_dist): # let's penalize large sigma? ==> better: lets penalize high uncertainty (=wide streched norm dist)
-        return -norm_dist.entropy()
+        return - norm_dist.entropy()
 
     def actor_loss(self,combined,norm_dist):
         actions = combined[:, 0]  # first column holds a_t
@@ -144,12 +144,16 @@ class A2CAgent(keras.Model):
         #print("\n", action)
         return action, value
 
+
+### USEFUL LINKS
 #https://github.com/rayush7/continuous_mountain_car_problem_actor_critic_rl_solution
 #https://github.com/andy-psai/MountainCar_ActorCritic/blob/master/RL%20Blog%20FINAL%20MEDIUM%20code%2002_12_19.ipynb
 # what does torch.clamp do?
-
 #mega für report: https://github.com/gingsi/rl-continuouscartpole
 
+
+
+### VERBESSERUNGS SCHRITTE
 #next: if environment has continuous observation space that can assume values [-inf,inf] (mountaincar) I should introduce state normalisation ==> 
     #learning: from NO convergence without state normalisation to pretty good convergence
 #next: load cartpole cont from git (to check whether bullet one has a problem) ==> no change
