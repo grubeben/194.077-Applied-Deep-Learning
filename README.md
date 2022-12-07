@@ -4,7 +4,7 @@ ________________________________________________________________________________
 ## Revision after feedback (1. Nov. 2022)
 
 I will prioritize implementing an A2C- agent and then and only then work on a DQN-agent and the comparative aspects of the project. 
-Hence, the project outcome shall definitely include:
+### Hence, the project outcome shall definitely include:
 
 1) Implementation of an n-step A2C-agent for discrete action spaces
 1.1) Employment of the agent on an open-ai gym environment to establish baseline
@@ -14,12 +14,12 @@ Hence, the project outcome shall definitely include:
 2.1) Employment of the agent in a PyBullet (physics-based) environment
 2.2) Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
-I will treat the following as BONUS (if time allows):
+#### I will treat the following as BONUS (if time allows):
 
 3) Implementation of a DQ- agent for at least one of the action-space scenarios described above
 4) Comparison of convergence and policy quality between action-value-based agent and policy-based agent
 
-The agents abve will be restricted to "ending problems* (= such ones that feature episodes)
+*note:* The agents above will be restricted to "ending problems* (= such ones that feature episodes)
 
 *Personal goals:*
 1) Broaden understanding of different approaches to reinforcement learning there are
@@ -280,9 +280,9 @@ ________________________________________________________________________________
 </details>
  
 ## TODOS
-1) understand tf visualizer
-2) implement method to save weights
-3) try mish/ swish activation instead of tanh or relu: https://iq.opengenus.org/activation-functions-ml/
+1) make continuous training stable
+2) visualize policy
+3) plot training
 
 ## DONES
 1) set up agent for CartPole and make converge
@@ -291,6 +291,10 @@ ________________________________________________________________________________
  
 2) set up NN weights saving and loading option
 3) set up Tensorboard
+
+1) understand tf visualizer
+2) implement method to save weights
+3) try mish/ swish activation instead of tanh or relu: https://iq.opengenus.org/activation-functions-ml/
 
 
 
