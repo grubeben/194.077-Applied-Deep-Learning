@@ -1,32 +1,33 @@
 # 194.077-Applied-Deep-Learning
-Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents based (on the RaceCarBullet environment)
+Inspection of the performance and methodical differences of policy-based and value-based reinforcement learning agents based (on the CartPole [revision] environment)
 ____________________________________________________________________________________
 ## Revision after feedback (1. Nov. 2022)
 
-In order to enable clear focus on every of the steps, I will prioritize implementing an A2C- agent and then and only then work on a DQN-agent and the comparative aspects of the project. Hence, the project outcome shall definitely include:
+I will prioritize implementing an A2C- agent and then and only then work on a DQN-agent and the comparative aspects of the project. 
+Hence, the project outcome shall definitely include:
 
-1) Implementation of a working A2C- agent
-2) Employment of the agent in a PyBullet environment
+1) Implementation of an n-step A2C-agent for discrete action spaces
+1.1) Employment of the agent on an open-ai gym environment to establish baseline
+1.2) Seek improvement by adaption of NN and data
 
-I will treat the following as bonus (whether time will suffice to execute these will become clear along the way):
+2) Implementation of an n-step A2C- agent for continuous action spaces
+2.1) Employment of the agent in a PyBullet (physics-based) environment
+2.2) Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
-3) Implementation of a DQ- agent for the same use case
-4) Comparison of convergence and policy quality between the two agents
+I will treat the following as BONUS (if time allows):
 
-Note that this will affect the order of the tasks below. Those that are not essential to the "must have" goals are marked with (BONUS).
-___________________________________________________________________________________
-## IN A NUTSHELL
+3) Implementation of a DQ- agent for at least one of the action-space scenarios described above
+4) Comparison of convergence and policy quality between action-value-based agent and policy-based agent
 
-Utilize an environment that is suitable to both continuous state/action spaces and discretized ones in order to compare how value-based (which can handle the former)
-perform against policy-based learning algorithms (which cannot (at least not by conception)). This is with respect to policy
-(max. reward) and convergence. I will dive into theory and recent publications that offer guidance on the advantages to the two approaches, implement an DQN-agent and an actor-critic-agent and then analyze how the results resonate with the theory.
+The agents abve will be restricted to "ending problems* (= such ones that feature episodes)
 
 *Personal goals:*
-1) Use the course to broaden understanding of different approaches to reinforcement learning there are
-and how they relate to another
-2) Gain experience in slightly more complicated environment frameworks and in dealing with continuous action / state spaces
+1) Broaden understanding of different approaches to reinforcement learning there are
+and how they relate to another by learning about and implementing a üpolicy-based method
+2) Dealing with continuous action / state spaces
 ____________________________________________________________________________________
 ## NECESSARY STEPS
+Steps that correspond to BONUS-quests are marked with [BONUS].
 
 <details><summary>Get details</summary>
 
@@ -34,118 +35,129 @@ ________________________________________________________________________________
 
 <details><summary>Get details</summary>
  
-*planned:* 10h
+*planned:* 10h *actual:* ~15h
  
-While I have some experience with Q-learning and DQ-learning agents
-for applications like "Cart-Pole", "Frozen Lake" (openai-gym) and control tasks represented in a "Matlab Simulink" environmet, I have not implemented  algorithms from the policy-based methods.
-Sutton& Barto (2nd edition)[^1] has given me a theoretical idea about how these methods work
-and relate to the value-based ones, however I haven't understood the method in depth when its application is favorable. I will compose a little introduction to policy-based methods to document the underlying theory [here](#foundations)
+While I have some experience with Q-learning and DQ-learning agents, I have not implemented algorithms from the policy-based family.
+*how:* read relevant chapters in Sutton& Barto (2nd edition)[^1], follow relevant lecture material (Deep Mind - Lecture Series) [^2]
+*result:* I composed a little introduction to policy-based methods to document the underlying theory [here](#foundations)
 
 </details>
 
 
-### 2. (BONUS) Establish hypothesis and decide on comparison parameters 
+### 2. Set error-metric
 
 <details><summary>Get details</summary>
  
-*planned:* 5h
+*planned:* 5h *actual:* 2h 
 
-Based on the theoretical knowledge established in a prior stage, I will draw up hypothesis regarding **policy success** and 
-**convergence behavior** of an agent in a specific case. It might become necessary to include further benchmark-parameters
-in order to draw conclusions from the agent test runs.
- 
+**Policy success:** for gym- environments is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
+**Convergence:** $loss_{total} = loss_{actor} + loss_{critic} + loss_{entropy}$. I measure the total loss per batch (a constant number of steps) and while i refrain from setting a numberic goal here, the metrics behavior over time should clearly indicate whether the agent reached a stable state
 </details>
 
-### 3. Check suitability and decide on environment
+### 3. Decide for an environment
 
 <details><summary>Get details</summary>
 
-*planned:* 8h
+*planned:* 8h *actual:* 8h
 
-*Choice: PyBullet implementation of RacecarBullet [^7]*
+At the start I wanted to work with an TrackMania Nations [^5] framework. Due to exptected extensive GPU training time (5h), I downgraded to PyBullet's implementation of RacecarBullet [^7] only to realize that documentation is barely comprehensive and some methods necessary to wrap it into a gym-env were not provided, which in turn led me to be content with the classical CartPoleEnv.
 
-Since I want to analyze the differences and areas of applicability of the different model approaches,
-rather than explore whether a certain application is realizable at all, I tend towards utilization
-of an open source environment. Such are:
+I overestimated the importance of this step in the beginning, because I had not yet understood the requirements that would allow an environment to be used as an experimental basis:
+* simple: we don't want to train for hours every time we implement a tiny change
+* well documented
+* visualizable
+* available in both continuous and discrete action-space version
 
-*DeepMind OpenSpiel and Control Suite (pysics-informed), PyBullet, Open AI Gym, TensorFlow TF-Agents, (Meta AI ReAgent), (pygame)*
-
-The environments satisfy easy integrability,
-allow custom definition of rewards and games are a great way to visualize policies and deduce clues from the agent's behavior. Some of the frameworks  include analytical tools (for convergence etc.)
-
-Most interesting appears the TF-Agent framework, since it is integrated with the Tensorflow library, supports Collab use and holds are OpenAIgym Atari suite for discrete action spaces and the MuJoCo environments for contiuous ones. However, MuJoCo only offers a 30day-free-trail, which might be too short for my purpose.
- 
-*Note:*
-I would have loved to use an existing TrackMania Nations [^5] framework in order to train a policy-based agent, however, the contributors suggest 5h training on a modern GPU (something I don't have access to) for acceptable results. I fear running the training on my CPU will lead either to timeouts (since the agent is learning online) or enormous training sessions.
- 
+For the start it does not matter much how fascinating an environment might be, the methods are the same no matter how large the state- and action-spaces. 
+In order to proof functionality we will have to start on simple tasks anyways.
 </details>
 
-### 4. Hacking time I 
+### 4. Hacking time I - discrete action-space A2C agent
 
 <details><summary>Get details</summary>
  
-*planned:* 15h
+*planned:* 15h *actual:* ~17h (10h + 3h + 4h)
 
-Implement the A2C- agent and the connection to the environment. 
+* Implement the A2C- agent for discrete action spaces.
+* Set up training-data-visualisation (Tensorboard) and policy-saving infrastructure.
+* Read about posssible improvements and implement them
+
 </details>
 
-### 5. Hacking time II 
- <details><summary>Get details</summary>
- 
-  *planned:* 12h
-  
-Decide on features to use as basis of action-decision (visual input/ simulation "sensor" data/ predefined state export from reinforcement- environment?). Experiment and define a final reward function, maybe experiment with auxiliary tasks.
-</details>
- 
-
-### 7. (BONUS) Hacking time III 
+### 5. Hacking time II - continuous action-space A2C agent
 <details><summary>Get details</summary>
  
- *planned:* 12h
- Implement DQ- agent.
+*planned:* 12h *actual:* 20h (and at current point not fully functional)
+
+Making this work appears to demand way more than just adapting NN-output, call and loss functions.
+
+After implementing and experimenting with:
+* state normalization
+* batch normalization
+* reward customization: introduction of penalties for terminal states
+* network architecture: addtional layers, nodes/layer
+* learning rates
+* loss weights
+* introduce gradient clipping in Adam-optimizer
+* utilization of tow implementations of the same environment
+* pretraining of critic-NN
+
+..the agent for ContinuousCartPole went from basically no learning to good learning within the first 100 episodes, just to collapse after
+</details>
+ 
+
+### 7. [BONUS] Hacking time III 
+<details><summary>Get details</summary>
+ 
+*planned:* 12h *actual: /*
+
+* Implement DQ- agent.
+* form hypotheis on behaviour compared to policy-based method  
  
 </details>
 
-### 6. Analysis regarding policy performance and convergence / (BONUS) comparative study
+### 6. Policy performance and convergence analysis/ [BONUS] comparative study
 <details><summary>Get details</summary>
  
- *planned:* 10h
+*planned:* 10h *actual: *
 
-Train agent and lock convergence.
-find a way to measure change in policy from one episode to later ones.
+* Train and document agent performance and convergence for different versions 
+* Implement test function that will run best agent
+* Verify results by visualisation of the policy
 </details>
 
 ### 8. Results 
 <details><summary>Get details</summary>
  
- *planned:* 6h
+*planned:* 6h *actual:*
 
-Sum up results for delivery of Assignment 2.
+Bring results into form for delivery of Assignment 2
 </details>
 
 ### 9. Presentation 
 <details><summary>Get details</summary>
  
- *planned:* 4h
+*planned:* 4h *actual:
 
 Prepare for presentation.
 </details>
 
-### 10. Application 
+### 10. Application/ Visualisation
 <details><summary>Get details</summary>
  
  *planned:* 6h
 
-Make a comparing demonstration of policies in action for the respective game. If possible highlight actions that
-demonstrate significant peculiarities of the respective agent 
+* Make a comparing demonstration of policies obtained by policy- vs action-value-based agent
+* If possible highlight actions that demonstrate significant peculiarities of the respective agent 
 
-</details>
 </details>
 
 _____________________________________________________________________________________
-## Sum of steps: *planned* ~80h
+## Sum of steps: *planned* ~80h *actual* ~
+
+</details>
 ____________________________________________________________________________________
-## FOUNDATIONS 
+## FOUNDATIONS *
 <details><summary>Get details</summary>
 
 ### General overview:
@@ -176,27 +188,27 @@ sigma: NN-weights
 
 
 #### Actor-Critic[^3]
-on policy
-Actor: learns policy; updates theta
-Critic: learns value; updates w
+~on policy~
+Actor: learns policy; updates $theta$
+Critic: learns value; updates $w$
 
-"Advantage"-A2C: state has a value(=b) and state-action has a value, if we subtract b, the advantage of taking action a remains.
+"Advantage"-A2C: state $s$ has a value $V(s)$ and state-action $a|s$ has a value $Q(a|s)$. If we subtract $A=Q-V$, we obtain the the advantage $A$ of taking action $a$
 
-This is usually done simultaneously, but it might be useful to first learn value-function well, before starting to learn to policy.
+Learning the two functions ($A(s)$ and $pi(s)$) is usually done simultaneously, but it might be useful to first learn value-function well, before starting to learn to policy.
  
 *Notes:* 
 * if we let multiple agents explore multiple instances of the same environment and let dem update the shared policy asynchronously training time can be decreased and effects in a single agent can be averaged out. This is called A3C.
 * We need on policy targets (from that exact same step), off policy will introduce bias
-* Dataset needs to be GOOD, because a single timestep with bad policy can destroy the process ever after (Trust region policy ==> $pi_{t+1}$ not very very different from $pi_t$)
+* Dataset needs to be GOOD, because a single timestep with bad policy can destroy the process ever after (Trust region policy ==> $pi_{t+1}$ not very different from $pi_t$)
 * Gaussian Policies
 
-### Usefulness
+### Usefulness (in comparison to action-value-based methods)
 
 *Downsides*
 
-* Tougher to get off the ground
+* Tougher to get off the ground 
 * Policy does not capture any information about the environment ==> so as soon as environment changes, policy might be useless
-* As a result: inefficient use of samples (datapoint might not be very useful to the policy, but it might teach a lot about the world) ==> to use this more advanced policy-based-agents also learn value function parallel to policy
+* As a result: inefficient use of samples (datapoint might not be very useful to the policy, but it might teach a lot about the world) ==> to use this more advanced policy-based-agents also learn value function parallel to policy (A2C does this, PPO does not)
 
 *Advantages*
 
@@ -212,25 +224,25 @@ ________________________________________________________________________________
 ## Architecture and Implementation
 <details><summary>Get details</summary>
 
-### Elements we need for an n-step AAC:
+### Elements we need for an n-step A2C:
  
 1) State representation: $S_t$. Does not only have to be the current observation, but maybe also the prior state (=recurrent network?) $(S_{t-1},O_t)->S_t$
 
 2) 2NNs: value- and a policy network (critic(w) and actor(theta)) $S -> v$, $S -> pi$
 
-3) Loss functions (for 1-step AA2C): 
+3) Loss functions (for 1-step A2C): 
  
    3.1) Critic: We want $TD=R_{t}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
  
-   3.2) Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_t)*log_prob(a_t|s_t)$
+   3.2) Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_t)*log_prob(a_t|s_t)$. This makes sense intuitevely, if the agent decided on an unlikely action (under current policy) but obtained a large advantage from doing so, the loss will be high (we want the policy to be changed towards: High-advantage-yielding actions shall correspond to high probabilities)
    
-4) Loss functions (for n-step AAC): 
+4) Loss functions (for n-step A2C): 
   4.1) Critic: $R_{t}+R_{t+1}*gamma+ .. +R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
   4.2) Actor:$\sum{log_prob(a_t|s_t)}*A(s,a_t)$  for $t=t,..,t+n$
 
-!NOTE!: In order to enable more efficient training and computations we will use only. Only the last network layer will be different in order to faciliate propability or value output. But what does this mean for the loss functions? We simply sum them up!
+!NOTE!: In order to enable more efficient training and computations we will use only one NN. Only the last network layer(s) will be different in order to faciliate distinct propability or value output (branches). But what does this mean for the loss functions? We simply sum them up: $loss_{total} = loss_{actor}+loss_{critic}
 
-If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s), we add a termin for the Entropy-loss
+Note: If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s), we add a term for the entropy-loss (this should increase stability)
 
 ### Algorithm
 #### for ending problems (such as the PoleCart, which terminates once the stick is inclined too far to one side)
@@ -252,19 +264,22 @@ If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s), we ad
  
 #### adapting for continuing problems (such as the BulletHopper)
  "for continuing problems without episode boundaries we need
-to define performance in terms of the average rate of reward per time step" [^1]
+ to define performance in terms of the average rate of reward per time step" [^1]
  
- Whhy and what exactly does that mean?
+ Why and what exactly does that mean?
  
  
  
 ### Classes and files 
  
- 1) **agent()** define networks, updates, policy-saving
+ 1) **agent()** initiate agent, define NN and it's related functions (call, value/action), loss functions 
  
- 2) **main()** initiate environemnt, training and visualisation
+ 2) **train()** initiate environment, training-loop, holds options for NN-architecuture / normalization / policy-saving and -loading
+
+___________________________________________________________________________________
+</details>
  
- ## TODOS
+## TODOS
 1) understand tf visualizer
 2) implement method to save weights
 3) try mish/ swish activation instead of tanh or relu: https://iq.opengenus.org/activation-functions-ml/
@@ -277,8 +292,7 @@ to define performance in terms of the average rate of reward per time step" [^1]
 2) set up NN weights saving and loading option
 3) set up Tensorboard
 
-___________________________________________________________________________________
-</details>
+
 
 ## RESEARCH, REFERENCES AND LIBRARIES
 
