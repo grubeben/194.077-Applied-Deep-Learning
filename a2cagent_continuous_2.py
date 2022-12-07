@@ -153,7 +153,7 @@ class A2CAgent(keras.Model):
 
 
 
-### VERBESSERUNGS SCHRITTE
+### IMPROVEMENTS
 #next: if environment has continuous observation space that can assume values [-inf,inf] (mountaincar) I should introduce state normalisation ==> 
     #learning: from NO convergence without state normalisation to pretty good convergence
 #next: load cartpole cont from git (to check whether bullet one has a problem) ==> no change
