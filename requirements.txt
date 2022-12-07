@@ -1,1 +1,8 @@
-
+gym==0.23.1
+keras==2.11.0
+numpy==1.23.4
+pybullet==3.2.5
+pygame==2.1.2
+tensorflow==2.11.0
+tensorflow_addons==0.18.0
+tensorflow_probability==0.18.0
