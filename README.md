@@ -38,8 +38,8 @@ Steps that correspond to BONUS-quests are marked with [BONUS].
 *planned:* 10h *actual:* ~15h
  
 While I have some experience with Q-learning and DQ-learning agents, I have not implemented algorithms from the policy-based family.
-*how:* read relevant chapters in Sutton& Barto (2nd edition)[^1], follow relevant lecture material (Deep Mind - Lecture Series) [^2]
-*result:* I composed a little introduction to policy-based methods to document the underlying theory [here](#foundations)
+* **How:** read relevant chapters in Sutton& Barto (2nd edition)[^1], follow relevant lecture material (Deep Mind - Lecture Series) [^2]
+* **Result:** I composed a little introduction to policy-based methods to document the underlying theory [here](#foundations)
 
 </details>
 
@@ -50,8 +50,8 @@ While I have some experience with Q-learning and DQ-learning agents, I have not 
  
 *planned:* 5h *actual:* 2h 
 
-**Policy success:** for gym- environments is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
-**Convergence:** $loss_{total} = loss_{actor} + loss_{critic} + loss_{entropy}$. I measure the total loss per batch (a constant number of steps) and while i refrain from setting a numberic goal here, the metrics behavior over time should clearly indicate whether the agent reached a stable state
+* **Policy success:** for gym- environments is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
+* **Convergence:** $loss_{total} = loss_{actor} + loss_{critic} + loss_{entropy}$. I measure the total loss per batch (a constant number of steps) and while i refrain from setting a numberic goal here, the metrics behavior over time should clearly indicate whether the agent reached a stable state
 </details>
 
 ### 3. Decide for an environment
@@ -156,8 +156,8 @@ ________________________________________________________________________________
 ## Sum of steps: *planned* ~80h *actual* ~
 
 </details>
-_____________________________________________________________________________________
 
+_____________________________________________________________________________________
 ## FOUNDATIONS
 <details><summary>Get details</summary>
 
