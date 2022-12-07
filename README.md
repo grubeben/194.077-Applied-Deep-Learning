@@ -14,14 +14,14 @@ I will prioritize implementing an A2C- agent and then and only then work on a DQ
 2.1) Employment of the agent in a PyBullet (physics-based) environment
 2.2) Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
-#### I will treat the following as BONUS (if time allows):
+### I will treat the following as BONUS (if time allows):
 
 3) Implementation of a DQ- agent for at least one of the action-space scenarios described above
 4) Comparison of convergence and policy quality between action-value-based agent and policy-based agent
 
-*note:* The agents above will be restricted to "ending problems* (= such ones that feature episodes)
+### *Note:* The agents above will be restricted to "ending problems* (= such ones that feature episodes)
 
-*Personal goals:*
+### *Personal goals:*
 1) Broaden understanding of different approaches to reinforcement learning there are
 and how they relate to another by learning about and implementing a üpolicy-based method
 2) Dealing with continuous action / state spaces
@@ -156,10 +156,10 @@ ________________________________________________________________________________
 ## Sum of steps: *planned* ~80h *actual* ~
 
 </details>
-____________________________________________________________________________________
-## FOUNDATIONS *
+_____________________________________________________________________________________
 <details><summary>Get details</summary>
 
+## FOUNDATIONS
 ### General overview:
 
 1) Model-based (focus on transition function between states, tough to go from model to actual policy)
@@ -240,27 +240,27 @@ ________________________________________________________________________________
   4.1) Critic: $R_{t}+R_{t+1}*gamma+ .. +R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
   4.2) Actor:$\sum{log_prob(a_t|s_t)}*A(s,a_t)$  for $t=t,..,t+n$
 
-!NOTE!: In order to enable more efficient training and computations we will use only one NN. Only the last network layer(s) will be different in order to faciliate distinct propability or value output (branches). But what does this mean for the loss functions? We simply sum them up: $loss_{total} = loss_{actor}+loss_{critic}
+!NOTE!: In order to enable more efficient training and computations we will use only one NN. Only the last network layer(s) will be different in order to faciliate distinct propability or value output (branches). But what does this mean for the loss functions? We simply sum them up: $loss_{total} = loss_{actor}+loss_{critic}$
 
-Note: If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s), we add a term for the entropy-loss (this should increase stability)
+Note: If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s)$, we add a term for the entropy-loss (this should increase stability)
 
 ### Algorithm
 #### for ending problems (such as the PoleCart, which terminates once the stick is inclined too far to one side)
  1) initialize $s_0$
- 2) initialize trace vectors (storage units for store $r_t,..,r_{t+n} and $V_t,..,V_{t+n}$
+ 2) initialize trace vectors (storage units for store $r_t,..,r_{t+n}$ and $$V_t,..,V_{t+n}$
  3) Loop while $s_t$ is not terminal
  
  3.1) compute action propabilities $probs_a=pi(.|s)$
  
  3.2) choose action $a_t$ by randomly sampling from distribution
  
- 3.3) take action $a_t$, observe $r,s_{t+1}
+ 3.3) take action $a_t$, observe $r,s_{t+1}$
  
  3.4) append $r_t$ $V_t$ to trace vectors
  
  3.5) if len(trace vectors)== batch.size: perform weight update in NN; clear trace vectors
  
- 3.6) $s_t$=$s_{t+1}$
+ 3.6) $s_t=s_{t+1}$
  
 #### adapting for continuing problems (such as the BulletHopper)
  "for continuing problems without episode boundaries we need
