@@ -7,24 +7,24 @@ I will prioritize implementing an A2C- agent and then and only then work on a DQ
 ### Hence, the project outcome shall definitely include:
 
 1) Implementation of an n-step A2C-agent for discrete action spaces
-  1.1) Employment of the agent on an open-ai gym environment to establish baseline
-  1.2) Seek improvement by adaption of NN and data
+    * Employment of the agent on an open-ai gym environment to establish baseline
+    * Seek improvement by adaption of NN and data
 
 2) Implementation of an n-step A2C- agent for continuous action spaces
-  2.1) Employment of the agent in a PyBullet (physics-based) environment
-  2.2) Comparison of performance between discrete-A2C and continuous-A2C in similar environment
+    * Employment of the agent in a PyBullet (physics-based) environment
+    * Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
 ### I will treat the following as BONUS (if time allows):
 
 3) Implementation of a DQ- agent for at least one of the action-space scenarios described above
 4) Comparison of convergence and policy quality between action-value-based agent and policy-based agent
 
-### *Note:* The agents above will be restricted to "ending problems* (= such ones that feature episodes)
-
 ### *Personal goals:*
 1) Broaden understanding of different approaches to reinforcement learning there are
 and how they relate to another by learning about and implementing a üpolicy-based method
 2) Dealing with continuous action / state spaces
+
+### *Note: The agents above will be restricted to "ending problems" (= such ones that feature episodes)*
 ____________________________________________________________________________________
 ## NECESSARY STEPS
 Steps that correspond to BONUS-quests are marked with [BONUS].
