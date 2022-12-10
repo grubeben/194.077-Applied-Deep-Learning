@@ -1,5 +1,5 @@
 """
-Continuous version by Ian Danforth:
+Continuous CArtPole Environment by Ian Danforth:
 taken from: https://gist.github.com/iandanforth/e3ffb67cf3623153e968f2afdfb01dc8
 
 Classic cart-pole system implemented by Rich Sutton et al.
