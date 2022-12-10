@@ -16,7 +16,7 @@ import a2cagent_continuous_2 as a2cc
 import continuous_cartpole as continuous_cartpole
 
 
-def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_layer=False, use_existing_policy=False, state_normalization=False, batch_normalization=False, specification=""):
+def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=False, use_existing_policy=False, state_normalization=False, batch_normalization=False, specification=""):
     # check for custom CARTPOLE ENV
     custom_cart = False
     if (env_str == "ContinuousCartPoleEnv"):
@@ -28,10 +28,8 @@ def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_laye
         env = continuous_cartpole.ContinuousCartPoleEnv()
     else:
         env = gym.make(env_str)
-    #s0 = env.reset(return_info=False)
     s0 = env.reset()
 
-    #act_dim = 2
     act_space_low = env.action_space.low[0]
     act_space_high = env.action_space.high[0]
     obs_dim = env.observation_space.shape[0]
@@ -40,28 +38,26 @@ def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_laye
     state_space_samples = np.array(
         [env.observation_space.sample() for x in range(6400)])
     if (env_str == "CartPoleContinuousBulletEnv-v0" or custom_cart == True):
-        # method does not yield reasonable results for pybullet env, so we load some historical state data
+        # method does not yield reasonable results for CartPole, so we load some historical state data
         state_space_samples = np.loadtxt(os.getcwd()+"/obs-samples/norm_a.txt")
 
-    # for i in range(1000):
-    #     print(state_space_samples[i], "\n")
-
-    # initiate agent 
+    # initiate agent
     model = a2cc.A2CAgent(s0, act_space_high, act_space_low, state_space_samples, obs_dim, state_normalization, batch_normalization,
                           use_existing_policy, add_branch_layer)
     # compile NN with inherited keras-method
-    # added gradient clipping #clipvalue=0.5 #clipnorm=1.0 
+    # add gradient clipping keras.optimizers.Adam(clipvalue=0.5) clipping keras.optimizers.Adam(clipnorm=1.0)
     model.compile(optimizer=keras.optimizers.Adam(), loss=[
                   model.critic_loss, model.actor_loss])
+
     # load weights from existing model
     if use_existing_policy == True:
-        # print("\n\n")
         # string in format 'A2C281120221423CartPole-v1_mish'
         policy = input(
             "insert directory corresponding to policy from which to start from:")
         model.train_on_batch(tf.stack(np.zeros((model.batch_size, model.obs_dim))), [
                              np.zeros((model.batch_size, 1)), np.zeros((model.batch_size, 2))])
-        model.load_weights(model.my_path+'/training_continuous/models/' + policy+"/")
+        model.load_weights(
+            model.my_path+'/training_continuous/models/' + policy+"/")
 
         """non WSL version"""
         # Tk().withdraw()
@@ -102,7 +98,6 @@ def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_laye
             episode_reward_sum += reward
 
             s = s_new
-            # print("\n",s)
 
             # handle end of episode
             if done:
@@ -132,13 +127,9 @@ def train(num_batches=10000, env_str="MountainCarContinuous-v0", add_branch_laye
         combined = []
         for i in range(len(actions)):
             combined.append([actions[i][0], advantages[i]])
-            # combined_dist.append([mus[i][0][0],sigmas[i][0][0]])
 
         combined = np.array(combined)
-        # combined_dist=np.array(combined_dist)
-        #print("\n\n", combined, "\n\n")
 
-        #print("\n update")
         loss = model.train_on_batch(
             tf.stack(states), [discounted_rewards, combined])
 
@@ -150,4 +141,4 @@ if __name__ == "__main__":
 
     # "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1",  "HopperBulletEnv-v0", "(LunarLanderContinuous-v2")
     train(num_batches=2000, env_str="ContinuousCartPoleEnv",
-          specification="", add_branch_layer=True, state_normalization=True, batch_normalization=True, use_existing_policy=False)
+          specification="justatestrun", add_branch_layer=True, state_normalization=True, batch_normalization=True, use_existing_policy=False)
