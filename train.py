@@ -14,8 +14,6 @@ from tkinter.filedialog import askopenfilename
 
 import a2cagent
 
-# "CartPole-v1": set sct_dim=2 manually;  "CartPoleBulletEnv-v1": get rid of return_info arg; "HopperBulletEnv-v0"
-
 
 def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, specification=""):
     # load environment
@@ -120,4 +118,5 @@ def train(num_batches=10000, env_str="CartPole-v1", use_existing_policy=False, s
             tf.summary.scalar('tot_loss', np.sum(loss), step)
 
 if __name__ == "__main__":
+    # "CartPole-v1": set sct_dim=2 manually;  "CartPoleBulletEnv-v1": get rid of return_info arg; "HopperBulletEnv-v0"
     train(num_batches=300, specification="mish", use_existing_policy=False)
