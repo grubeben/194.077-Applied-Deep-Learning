@@ -1,17 +1,11 @@
+import os.path
+
 import gym
-import pybullet as p
 import numpy as np
 import tensorflow as tf
 import tensorflow_addons as tfa
 from tensorflow import keras
 from keras import layers
-
-from datetime import datetime
-import os
-import os.path
-import glob
-import shutil
-import json
 
 
 class A2CAgent(keras.Model):
@@ -24,6 +18,7 @@ class A2CAgent(keras.Model):
         """conveniece"""
         self.my_path = os.getcwd()
         self.model_path = 0
+        self.render_size = 10
 
         """parameters"""
         self.critic_loss_weight = 0.4

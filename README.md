@@ -26,7 +26,7 @@ and how they relate to another by learning about and implementing a üpolicy-bas
 
 ### *Note: The agents above will be restricted to "ending problems" (= such ones that feature episodes)*
 ____________________________________________________________________________________
-## NECESSARY STEPS
+## STEPS& MILESTONES
 Steps that correspond to BONUS-quests are marked with [BONUS].
 
 <details><summary>Get details</summary>

@@ -1,6 +1,4 @@
 import gym
-import pybullet as p
-import pybullet_envs
 import pygame
 import numpy as np
 import tensorflow as tf
@@ -15,7 +13,7 @@ from tkinter.filedialog import askopenfilename
 import a2cagent
 
 
-def train(num_batches=10000, env_str="CartPole-v1", activation_function="relu", initializer="normal", state_normalization=False, batch_normalization=False, use_existing_policy=False, specification=""):
+def train(max_num_batches=1000, converged_reward_limit=195, env_str="CartPole-v1", activation_function="relu", initializer="normal", state_normalization=False, batch_normalization=False, use_existing_policy=False, specification=""):
     # load environment
     env = gym.make(env_str)
     s0 = env.reset(return_info=False)
@@ -46,7 +44,8 @@ def train(num_batches=10000, env_str="CartPole-v1", activation_function="relu", 
             "insert directory cooresponding to policy from which to start from:")
         model.train_on_batch(tf.stack(np.zeros((model.batch_size, model.obs_dim))), [
                              np.zeros((model.batch_size, 1)), np.zeros((model.batch_size, 2))])
-        model.load_weights(model.my_path+'/training/models/' + policy+"/")
+        model.load_weights(
+            model.my_path+'/training_discrete/' + policy+"/model/")
 
         """non WSL version"""
         # Tk().withdraw()
@@ -64,12 +63,15 @@ def train(num_batches=10000, env_str="CartPole-v1", activation_function="relu", 
         model.model_path + '/tensorboard')
 
     # main training loop
+    episode_rewards = np.zeros(100)
     episode_reward_sum = 0
     episode_reward_sum_best = 0
     s = env.reset()
     episode = 1
+    batch = 0
     loss = 0
-    for step in range(num_batches):
+
+    for batch in range(max_num_batches):
         rewards = []
         actions = []
         values = []
@@ -97,6 +99,10 @@ def train(num_batches=10000, env_str="CartPole-v1", activation_function="relu", 
                     f"Episode: {episode}, latest episode reward: {episode_reward_sum}, loss: {loss}")
                 with train_writer.as_default():
                     tf.summary.scalar('rewards', episode_reward_sum, episode)
+                # check for convergence of sufficient quality
+                episode_rewards = np.append(
+                    episode_rewards, episode_reward_sum)
+                episode_rewards = np.delete(episode_rewards, 0)
 
                 # safe best model-version for later use
                 if (episode_reward_sum >= episode_reward_sum_best):
@@ -121,12 +127,19 @@ def train(num_batches=10000, env_str="CartPole-v1", activation_function="relu", 
         loss = model.train_on_batch(
             tf.stack(states), [discounted_rewards, combined], return_dict=False)
         with train_writer.as_default():
-            tf.summary.scalar('tot_loss', np.sum(loss), step)
+            tf.summary.scalar('tot_loss', np.sum(loss), batch)
+
+        # make convergence check every 10 batches and only if reward was above necessary average
+        if (episode_reward_sum > converged_reward_limit):
+            if (np.mean(episode_rewards) >= episode_reward_sum):
+                print("\nCONVERGED in ", batch, " batches / ",
+                      batch*model.batch_size, " steps")
+                return 0
 
 
 if __name__ == "__main__":
     """NOTE"""
     # "CartPole-v1": set sct_dim=2 manually;
 
-    train(num_batches=300, specification="TEST", activation_function='mish', initializer='xavier', state_normalization=True,
-          batch_normalization=True, use_existing_policy=False)
+    train(max_num_batches=1000, converged_reward_limit=195, specification="DELETE", activation_function='mish', initializer='normal', state_normalization=False,
+          batch_normalization=False, use_existing_policy=False)
