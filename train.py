@@ -1,3 +1,4 @@
+import a2cagent
 import gym
 import pygame
 import numpy as np
@@ -9,7 +10,10 @@ import os
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
-import a2cagent
+import matplotlib.pyplot as plt
+from IPython.display import clear_output
+from IPython import display
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 
 class Session():
@@ -24,12 +28,14 @@ class Session():
     initializer:            ['normal', 'xavier']
     state_normalization:    True/False
     batch_normalization:    True/False
-    specification:          string
-                            [NOTE: you will be asked to provide the Session-name of the policy you want to reuse (string in format f.e. 'A2C281120221423CartPole-v1_mish')]
-                            specification: string (You can add a custom add on to the name of the session)
+    specification:          string (You can add a custom add_on to the name of the session)
+    use_existing_policy:    True/False
+    policy:                 =None / path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_discrete/ as string
+                            [NOTE: if policy is not provided, you will be asked to provide the Session-name of the policy you want to reuse 
+                            (path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_discrete/ dir as string)]
     """
 
-    def __init__(self, converged_reward_limit=195, env_str="CartPole-v1", activation_function="relu", initializer="normal", state_normalization=False, batch_normalization=False, use_existing_policy=False, specification=""):
+    def __init__(self, converged_reward_limit=195, env_str="CartPole-v1", activation_function="relu", initializer="normal", state_normalization=False, batch_normalization=False, use_existing_policy=False, policy=None, specification=""):
         # session parameter
         self.converged_reward_limit = converged_reward_limit
 
@@ -39,7 +45,10 @@ class Session():
 
         self.obs_dim = self.env.observation_space.shape[0]
         self.act_dim = self.env.action_space
-        self.act_dim = 2  # has to be set manually
+        if (env_str == "CartPole-v1"):
+            self.act_dim = 2  # has to be set manually for agent class to understand
+        if (env_str == "Acrobot-v1"):
+            self.act_dim = 3  # has to be set manually for agent class to understand
 
         # state normalisation
         self.state_space_samples = np.array(
@@ -58,18 +67,22 @@ class Session():
 
         # load weights from existing model
         if use_existing_policy is True:
-            # string in format 'A2C281120221423CartPole-v1_mish'
-            policy = input(
-                "insert directory cooresponding to policy from which to start from:")
-            self.model.train_on_batch(tf.stack(np.zeros((self.model.batch_size, self.model.obs_dim))), [
-                np.zeros((self.model.batch_size, 1)), np.zeros((self.model.batch_size, 2))])
-            self.model.load_weights(
-                self.model.my_path+'/training_discrete/' + policy+"/model/")
+            if policy is None:
+                policy = input(
+                    "Please insert path to dir of form 'A2C281120221423CartPole-v1_mish' relative to 'AppliedDeep../training_discrete/' as string:\n")
+                self.model.train_on_batch(tf.stack(np.zeros((self.model.batch_size, self.model.obs_dim))), [
+                    np.zeros((self.model.batch_size, 1)), np.zeros((self.model.batch_size, 2))])
+                self.model.load_weights(
+                    self.model.my_path+'/training_discrete/' + policy+"/model/")
 
-            """non WSL version"""
-            # Tk().withdraw()
-            # filename = askopenfilename()
-            # self.model.load_weights(filename)
+                """non WSL version"""
+                # Tk().withdraw()
+                # filename = askopenfilename()
+                # self.model.load_weights(filename)
+
+            else:
+                self.model.load_weights(
+                    self.model.my_path+'/training_discrete/' + policy+"/model/")
 
         # set up ModelCheckpoint
         self.model.model_path = self.model.my_path+'/training_discrete' + \
@@ -81,9 +94,6 @@ class Session():
         self.train_writer = tf.summary.create_file_writer(
             self.model.model_path + '/tensorboard')
 
-        # run for 1 batch to initialize
-        self.train(max_num_batches=1)
-
     def train(self, max_num_batches):
         """ 
         main training loop
@@ -92,9 +102,9 @@ class Session():
 
         """
 
-        episode_rewards = np.zeros(100)
+        episode_rewards = np.empty(100)
         episode_reward_sum = 0
-        episode_reward_sum_best = 0
+        episode_reward_sum_best = -500
         s = self.env.reset()
         episode = 1
         batch = 0
@@ -168,10 +178,64 @@ class Session():
                           batch*self.model.batch_size, " steps")
                     return 0
 
+    def test(self, num_episodes):
+        """
+        Runs the current best policy learned during the Session() and renders it
+        If you want to visualize a policy from a different session, initialize a new session object with 'use_existing_policy=True argument'
+        [NOTE: IPyhton Displays are not available on WSL, this rendering method is a workaround
+               Should only be called by a jupyter notebook!]
+
+        num_episodes: The number of episodes that will be visualized
+        """
+        episode_reward_sum = 0
+        s = self.env.reset()
+        episode = 1
+        step = 0
+        while (episode <= num_episodes):
+            # obtain action distibution
+            _, policy_logits = self.model(s.reshape(1, -1))
+            a_t, V_t = self.model.action_value(
+                s.reshape(1, -1))  # choose action
+            s_new, reward, done, _ = self.env.step(a_t.numpy()[0])  # make step
+
+            # render1 - in jupyter notebook
+            if (step % (self.model.render_size) == 0):
+                clear_output(wait=True)
+                x = self.env.render(mode='rgb_array')
+                plt.imshow(x)
+                plt.show()
+
+            episode_reward_sum += reward
+
+            s = s_new
+
+            # handle end of episode
+            if done:
+                s = self.env.reset()
+                with self.train_writer.as_default():
+                    tf.summary.scalar('rewards', episode_reward_sum, episode)
+
+                episode_reward_sum = 0
+                episode += 1
+
 
 if __name__ == "__main__":
 
-    """example for running "CartPole-v1" until convergence"""
-    session = Session(converged_reward_limit=195, env_str="CartPole-v1", specification="TEST_RUN", activation_function='mish', initializer='normal', state_normalization=False,
+    """example for running pretrained "CartPole-v1" until convergence"""
+    # session = Session(converged_reward_limit=195, env_str="CartPole-v1", specification="no_normalization", activation_function='relu', initializer='normal', state_normalization=False,
+    #                   batch_normalization=False, use_existing_policy=False)
+    # session.train(max_num_batches=1000)
+
+    """example for running pretrained "CartPole-v1" until convergence"""
+    # session = Session(converged_reward_limit=195, env_str="CartPole-v1", specification="based_on_pretrained", activation_function='mish', initializer='xavier', state_normalization=True,
+    #                   batch_normalization=False, use_existing_policy=True, policy='pretrained/CartPole-v1_mish_normal_STATE_NORMALIZATION/')
+    # session.train(max_num_batches=1000)
+
+    """
+    example for running pretrained "Acrobat-v1" until convergence
+
+    [NOTE: for some interesting reason this training session behaves a bit like the continuous ones: most of the time without any success, but now and then you get lucky and the agent learns]
+    """
+    session = Session(converged_reward_limit=-100, env_str="Acrobot-v1", specification="PROOF", activation_function='mish', initializer='normal', state_normalization=False,
                       batch_normalization=False, use_existing_policy=False)
     session.train(max_num_batches=1000)
