@@ -236,6 +236,6 @@ if __name__ == "__main__":
 
     [NOTE: for some interesting reason this training session behaves a bit like the continuous ones: most of the time without any success, but now and then you get lucky and the agent learns]
     """
-    session = Session(converged_reward_limit=-100, env_str="Acrobot-v1", specification="PROOF", activation_function='mish', initializer='normal', state_normalization=False,
-                      batch_normalization=False, use_existing_policy=False)
-    session.train(max_num_batches=1000)
+    # session = Session(converged_reward_limit=-100, env_str="Acrobot-v1", specification="PROOF", activation_function='mish', initializer='normal', state_normalization=False,
+    #                   batch_normalization=False, use_existing_policy=False)
+    # session.train(max_num_batches=1000)
