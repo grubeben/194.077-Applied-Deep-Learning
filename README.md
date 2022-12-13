@@ -2,15 +2,15 @@
 
 Inspection of the performance and methodics of policy-based reinforcement learning algorithms by implementation of an n-step A2C agent
 
+![A2C agent performance for different configurations](obs-samples/rewards_over_time_a2c_discrete.PNG)
+
 ---
 
 ## GOALS
 
 <details><summary>Get details</summary>
 
-I will prioritize implementing an A2C- agent and then and only then work on a DQN-agent and the comparative aspects of the project.
-
-### Hence, the project outcome shall definitely include:
+### The project outcome shall definitely include:
 
 1. Implementation of an n-step A2C-agent for discrete action spaces
 
@@ -40,9 +40,9 @@ I will prioritize implementing an A2C- agent and then and only then work on a DQ
 
 ## STEPS& MILESTONES
 
-<details><summary>Get details</summary>
-
 Steps that correspond to BONUS-quests are marked with [BONUS].
+
+<details><summary>Get details</summary>
 
 ### 1. Solidify understanding about policy-based methods
 
