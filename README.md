@@ -233,7 +233,7 @@ _Advantages_
 
 4. Loss functions (for n-step A2C):
 
-   4.1) Critic: $R_{t}+R_{t+1}*gamma+$. . $+$ $R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
+   4.1) Critic: $R_{t}+R_{t+1}*gamma+$. . $+$ $R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}-V_{s}$
 
    4.2) Actor: $\sum{log_{prob}(a_t|s_t)}*A(s,a_t)$ for $t=t,..,t+n$
 
