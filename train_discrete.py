@@ -1,5 +1,6 @@
+import a2cagent_discrete as a2cagent
+
 import logging
-import a2cagent
 import gym
 import pygame
 import numpy as np
