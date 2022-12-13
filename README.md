@@ -233,9 +233,9 @@ _Advantages_
 
 4. Loss functions (for n-step A2C):
 
-   4.1) Critic: $R_{t}+R_{t+1}*gamma+$..$+R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
+   4.1) Critic: $R_{t}+R_{t+1}*gamma+$. . $+R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
 
-   4.2) Actor:$\sum{log_{prob}(a_t|s_t)}*A(s,a_t)$ for $t=t,..,t+n$
+   4.2) Actor: $\sum{log_{prob}(a_t|s_t)}*A(s,a_t)$ for $t=t,..,t+n$
 
 !NOTE!: In order to enable more efficient training and computations we will use only one NN. Only the last network layer(s) will be different in order to faciliate distinct propability or value output (branches). But what does this mean for the loss functions? We simply sum them up: $loss_{total} = loss_{actor}+loss_{critic}$
 
