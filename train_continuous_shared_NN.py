@@ -17,6 +17,21 @@ import continuous_cartpole_env as continuous_cartpole
 
 
 def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=False, use_existing_policy=False, state_normalization=False, batch_normalization=False, specification=""):
+    """ 
+    Initialization of the training session, corresponding agaent and main training loop
+
+    num_batches:            number of batches after which training stops
+    env_str:                ["ContinuousCartPoleEnv" "CartPoleContinuousBulletEnv-v0" "MountainCarContinuous-v0"]
+    specification:          string (You can add a custom add_on to the name of the session)
+    add_branch_layer:       True/False  gives you the option to add an extra layer to each of the critic/ actor branches in order to 
+                                        decrease actor critic connectivity
+    state_normalization:    True/False  enables state-normalization
+    batch_normalization:    True/False  enables batch-normalization
+    use_existing_policy:    True/False
+                            [NOTE: you will be asked to provide the Session-name of the policy you want to reuse 
+                            (path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_continuous/shared_NN/ dir as string)]
+    """
+        
     # check for custom CARTPOLE ENV
     custom_cart = False
     if (env_str == "ContinuousCartPoleEnv"):
@@ -44,8 +59,8 @@ def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=F
     # initiate agent
     model = a2cc.A2CAgent(s0, act_space_high, act_space_low, state_space_samples, obs_dim, state_normalization, batch_normalization,
                           use_existing_policy, add_branch_layer)
-    # compile NN with inherited keras-method
-    # add gradient clipping keras.optimizers.Adam(clipvalue=0.5) clipping keras.optimizers.Adam(clipnorm=1.0)
+
+    # if you wish to add gradient clipping: keras.optimizers.Adam(clipvalue=0.5) clipping keras.optimizers.Adam(clipnorm=1.0)
     model.compile(optimizer=keras.optimizers.Adam(), loss=[
                   model.critic_loss, model.actor_loss])
 
@@ -57,22 +72,17 @@ def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=F
         model.train_on_batch(tf.stack(np.zeros((model.batch_size, model.obs_dim))), [
                              np.zeros((model.batch_size, 1)), np.zeros((model.batch_size, 2))])
         model.load_weights(
-            model.my_path+'/training_continuous/models/' + policy+"/")
-
-        """non WSL version"""
-        # Tk().withdraw()
-        # filename = askopenfilename()
-        # model.load_weights(filename)
+            model.my_path+'/training_continuous/shared_NN/models/' + policy+"/")
 
     # set up ModelCheckpoint
-    model.model_path = model.my_path+'/training_continuous/models' + \
+    model.model_path = model.my_path+'/training_continuous/shared_NN/models' + \
         f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}" + \
         env_str+'_'+specification+'/'
     os.makedirs(model.model_path)
 
     # set up TensorBoard to visualize progress
     train_writer = tf.summary.create_file_writer(
-        model.my_path + '/training_continuous/tensorboard'+f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}"+env_str+"_"+specification)
+        model.my_path + '/training_continuous/shared_NN/tensorboard'+f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}"+env_str+"_"+specification)
 
     # main training loop
     episode_reward_sum = 0
@@ -87,8 +97,7 @@ def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=F
         states = []
         dones = []
         for i in range(model.batch_size):
-            # obtain action distibution
-            _, _ = model(s.reshape(1, -1))
+            _, _ = model(s.reshape(1, -1)) # initialize
             a_t, V_t = model.action_value(s.reshape(1, -1))  # choose action
             s_new, reward, done, _ = env.step(a_t.numpy()[0])  # make step
             actions.append(a_t.numpy()[0])  # append trace vectors
@@ -130,6 +139,7 @@ def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=F
 
         combined = np.array(combined)
 
+        # shared_NN update
         loss = model.train_on_batch(
             tf.stack(states), [discounted_rewards, combined])
 
@@ -139,6 +149,15 @@ def train(num_batches=10000, env_str="ContinuousCartPoleEnv", add_branch_layer=F
 
 if __name__ == "__main__":
 
-    # "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1",  "HopperBulletEnv-v0", "(LunarLanderContinuous-v2")
-    train(num_batches=2000, env_str="ContinuousCartPoleEnv",
-          specification="confirm_prior_achievement", add_branch_layer=False, state_normalization=True, batch_normalization=False, use_existing_policy=False)
+    """
+    Suitable for the following environments:
+    "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1")
+    """
+
+    """example for an attempt to run "ContinuousCartPoleEnv" to convergence"""
+    # train(num_batches=2000, env_str="ContinuousCartPoleEnv",
+    #       specification="confirm_prior_achievement", add_branch_layer=False, state_normalization=True, batch_normalization=False, use_existing_policy=False)
+
+    """example for an attempt to run "MountainCarContinuous-v0" to convergence"""
+    train(num_batches=2000, env_str="MountainCarContinuous-v0",
+          specification="confirm_prior_achievement", add_branch_layer=True, state_normalization=True, batch_normalization=False, use_existing_policy=False)

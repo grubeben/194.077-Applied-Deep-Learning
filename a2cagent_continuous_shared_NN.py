@@ -47,7 +47,7 @@ class A2CAgent(keras.Model):
         self.batch_normalization = batch_normalization
         self.state_normalization = state_normalization
         self.state_space_samples = state_space_samples
-        self.nodes_per_dense_layer = 40
+        self.nodes_per_dense_layer = 64
         self.my_weight_dict = {}
 
         # state normalisation
@@ -150,22 +150,3 @@ class A2CAgent(keras.Model):
         action = tf.clip_by_value(
             action, self.action_space_low, self.action_space_high)
         return action, value
-
-
-# IMPROVEMENTS
-# next: if environment has continuous observation space that can assume values [-inf,inf] (mountaincar) I should introduce state normalisation ==>
-    # learning: from NO convergence without state normalisation to pretty good convergence
-# next: load cartpole cont from git (to check whether bullet one has a problem) ==> no change
-# next: add negative reward for episode end ==> no change ==> large loss in critic network, little loss in actor networ
-# next: additional critic layer ==> a tiny bit better (seems to build up knowledge only to collapse after)
-# next: maybe overparametrisation, try smaller network (maybe a bit better, but might be random)
-# next: change learning rates? since i only use one NN i cannot do that individually (but this should be dealt with by the loss_weights?)
-# next: decrease general learning rate ==> nope
-# next: batch normalisation?
-
-# next: pretrain value network? nope
-# probably branch approach is a problem..
-
-# TODO
-# add normalization etc to discrete, make graphs for diffrerent versions for report
-# set up basic tests (in train loop?)

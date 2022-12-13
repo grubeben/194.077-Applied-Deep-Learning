@@ -13,12 +13,6 @@ import glob
 import shutil
 import json
 
-"""
-set init to xavier
-
-"""
-
-
 class agent():
     def __init__(self, s0, act_space_high, act_space_low, obs_dim, state_space_samples):
         """conveniece"""
@@ -34,10 +28,10 @@ class agent():
         self.obs_dim = obs_dim
 
         """action space"""
+        """ work around in order to process every environment's action space input"""
         self.action_space_low = [(float(str(
-            act_space_low)))]  # work around in order to process every environment's action space input
+            act_space_low)))]  
         self.action_space_high = [(float(str(act_space_high)))]
-        #print(self.action_space_high,self.action_space_low, type(self.action_space_high),"\n")
 
         """NNs"""
         self.a=self.actor(state_space_samples)
@@ -48,6 +42,10 @@ class agent():
     """reward and advantages"""
 
     def discounted_rewards_advantages(self, rewards, V_batch, V_nplus1, dones=0):
+        """
+        computes discounted rewards and advantages from rewards collected, NN-value-function estimates (V(0-t)) during batch 
+        and NN-value-function estimate (V(t+1)) for the step ahead
+        """
         discounted_rewards = np.array(rewards + [V_nplus1])
         for t in reversed(range(len(rewards))):
             discounted_rewards[t] = rewards[t] + self.gamma * \
@@ -57,7 +55,10 @@ class agent():
         advantages = discounted_rewards - np.stack(V_batch)
         return discounted_rewards, advantages
 
-    def action_value(self, state):  # pass state through actor and choose action
+    def action_value(self, state):
+        """
+        choose action from normal_distribution(a)
+        """
         norm_dist = self.a.predict_on_batch(state)  # runs agent.call()
         value = self.c.predict_on_batch(state)  # runs critic.call()
         # sample from prob distribution and remove batch dimension
@@ -101,6 +102,10 @@ class agent():
                 1, activation=tf.nn.softplus)  # outlet 2 | sigma has to be positive
 
         def call(self, inputs):
+            """
+            passes state forward through NN; method-name 'call()' can not be changed, since tf.keras uses this overload to build NN
+            output: normal_distribution(a)
+            """
             x = inputs
             x = self.actor_weight_dict["state_norm"](x)
             x = self.actor_weight_dict["dense1"](x)
@@ -111,14 +116,19 @@ class agent():
             norm_dist = tfp.distributions.Normal(mu, sigma)
             return norm_dist  
 
-        # lets penalize high uncertainty (== wide streched norm dist)
+
         def entropy_loss(self, norm_dist):
+            """
+            lets penalize high uncertainty (== wide streched norm dist)
+            """
             return - norm_dist.entropy()
 
-        """
-        The loss works like the following:probability that the chosen action actually is taken chosen * advantage of that decision
-        """
+
         def actor_loss(self, combined, norm_dist):
+            """
+            The loss works like the following:
+            probability that the chosen action actually is taken chosen * advantage of that decision
+            """
             actions = combined[:, 0]  # first column holds a_t
             advantages = combined[:, 1]  # second column holds A_t
             loss = -norm_dist.log_prob(actions)*advantages
@@ -132,11 +142,8 @@ class agent():
         def __init__(self, state_space_samples):
             super().__init__()
 
-            """conveniece"""
+            """convenience"""
             self.model_path = 0
-
-            """parameters"""
-
 
             """ NN"""
             self.state_space_samples = state_space_samples
@@ -157,6 +164,10 @@ class agent():
             self.critic_weight_dict["value"] = layers.Dense(1)
 
         def call(self, inputs):
+            """
+            passes state forward through NN; method-name 'call()' can not be changed, since tf.keras uses this overload to build NN
+            output: V(t)
+            """
             x = inputs
             x = self.critic_weight_dict["state_norm"](x)
             x = self.critic_weight_dict["dense1"](x)
@@ -165,6 +176,9 @@ class agent():
             return value
 
         def critic_loss(self, discounted_rewards, predicted_values):
+            """
+            simple MSE between predicted V(t) and actual V(t)= discounted rewards
+            """
             loss = keras.losses.mean_squared_error(
                 discounted_rewards, predicted_values)
             return loss
