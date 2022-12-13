@@ -322,15 +322,14 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 - Base model did not meat gym's 'problem solved' criteria
 - Improved agent (featuring state normalization and mish-activation) solved it in **21120  steps**
-- please follow and run 'discrete.ipynb' and consider it an interactive report for the discrete case
+- please follow and run **'discrete.ipynb'** and consider it an interactive report for the discrete case
 
 ### Continuous-action-space A2C agent
 
-- Way more troublesome than discrete case
-- At current state still unstable training
+- More troublesome than discrete case; at current state still unstable training
 - However, some lucky runs deliver results, the overall architecture seems to be sound 
   * In such cases: good learning within the first 100 episodes, just to collapse after
-  * Those 'lucky' models have been stored and can be seen in action at 'continuous.ipynb'
+  * Those 'lucky' models have been stored and can be seen in action at **'continuous.ipynb'**
 
 - The following improvements were tried:
   * state normalization
