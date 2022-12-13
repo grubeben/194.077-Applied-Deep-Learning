@@ -96,15 +96,16 @@ class A2CAgent(keras.Model):
     def actor_loss(self, combined, policy_logits):
         """
         computes actor loss based on trace vectors from Session.train()
+
+        [NOTE:  actions are mapped onto [0,1,2,..,act_dim]
+                CategoricalCrossentropy maps the log-probabilities onto the same space before compuing the Crossentropy
+                define sparse_ce object with sum-reduction (since we want the loss to be the some of step-losses)
+                and set 'advantages' as sample weights]
         """
         # first column holds actions taken during batch
         actions = combined[:, 0]
         # second column holds advantages obtained during batch
         advantages = combined[:, 1]
-        # actions are mapped onto [0,1,2,..,act_dim]
-        # CategoricalCrossentropy maps the log-probabilities onto the same space before compuing the Crossentropy
-        # define sparse_ce object with sum-reduction (since we want the loss to be the some of step-losses)
-        # and set 'advantages' as sample weights
         sparse_ce = keras.losses.SparseCategoricalCrossentropy(
             from_logits=True, reduction=tf.keras.losses.Reduction.SUM)
         actions = tf.cast(actions, tf.int32)
@@ -121,6 +122,7 @@ class A2CAgent(keras.Model):
 
         output: V(t), normal_distribution(a)
         """
+        
         x = inputs
         if (self.state_normalization == True):
             x = self.my_weight_dict["state_norm"](x)

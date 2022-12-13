@@ -27,7 +27,6 @@ class Session():
     Defines a training session prior to starting training.
 
     env_str:                ["ContinuousCartPoleEnv" "CartPoleContinuousBulletEnv-v0" "MountainCarContinuous-v0"]
-
     converged_reward_limit: If mean reward over 100 episodes is >= 'converged_reward_limit' training stops
                             [NOTE: only well defined for CartPole, for every other environment set to a very high number and adjust with 'train(max_num_batches)' only]
     specification:          string (You can add a custom add_on to the name of the session)
@@ -38,6 +37,7 @@ class Session():
     """
 
     def __init__(self, converged_reward_limit=195, env_str="ContinuousCartPoleEnv", use_existing_policy=False, policy=None, specification=""):
+
         # session parameter
         self.converged_reward_limit = converged_reward_limit
 
@@ -75,23 +75,25 @@ class Session():
         lr_critic = 0.001
 
         # compile NN with inherited keras-method
-        self.model.a.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_actor), loss=self.model.a.actor_loss)
-        self.model.c.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_critic), loss=self.model.c.critic_loss)
+        self.model.a.compile(optimizer=keras.optimizers.Adam(
+            learning_rate=lr_actor), loss=self.model.a.actor_loss)
+        self.model.c.compile(optimizer=keras.optimizers.Adam(
+            learning_rate=lr_critic), loss=self.model.c.critic_loss)
 
         # load weights from existing model
         if use_existing_policy is True:
             if policy is None:
                 policy = input(
-                    "Please insert path to dir of form 'A2C281120221423CartPole-v1_mish' relative to 'AppliedDeep../training_continuous/' as string:\n")
+                    "Please insert path to dir of form 'A2C281120221423CartPole-v1_mish' relative to 'AppliedDeep../training_continuous/distinct_NN/' as string:\n")
                 self.model.actor.train_on_batch(tf.stack(np.zeros(
                     (self.model.batch_size, self.model.obs_dim))), np.zeros((self.model.batch_size, 2)))
                 self.model.critic.train_on_batch(tf.stack(np.zeros(
                     (self.model.batch_size, self.model.obs_dim))), np.zeros((self.model.batch_size, 1)))
 
                 self.model.a.load_weights(
-                    self.model.my_path+'/training_continuous/' + policy+"/modelc/actor/")
+                    self.model.my_path+'/training_continuous/distinct_NN/' + policy+"/model/actor/")
                 self.model.c.load_weights(
-                    self.model.my_path+'/training_continuous/' + policy+"/modelc/critic/")
+                    self.model.my_path+'/training_continuous/distinct_NN/' + policy+"/model/critic/")
 
             else:
                 self.model.a.train_on_batch(tf.stack(np.zeros(
@@ -100,13 +102,13 @@ class Session():
                     (self.model.batch_size, self.model.obs_dim))), np.zeros((self.model.batch_size, 1)))
 
                 self.model.a.load_weights(
-                    self.model.my_path+'/training_continuous/' + policy+"/modelc/actor/")
+                    self.model.my_path+'/training_continuous/distinct_NN/' + policy+"/model/actor/")
                 self.model.c.load_weights(
-                    self.model.my_path+'/training_continuous/' + policy+"/modelc/critic/")
+                    self.model.my_path+'/training_continuous/distinct_NN/' + policy+"/model/critic/")
 
         # set up ModelCheckpoints
-        path_base = self.model.my_path+'/training_continuous' + \
-            f"/A2C{datetime.now().strftime('%d%m%Y%H%M')}" + \
+        path_base = self.model.my_path+'/training_continuous/distinct_NN/' + \
+            f"A2C{datetime.now().strftime('%d%m%Y%H%M')}" + \
             env_str+'_mish_xavier_'+specification
 
         self.model.a.model_path = path_base + '/model/actor/'
@@ -122,11 +124,9 @@ class Session():
     def train(self, max_num_batches):
         """ 
         main training loop
-
         max_num_batches: number of batches after which training stops even if convergence is not reached
-
         """
-
+        
         episode_rewards = np.empty(100)
         episode_reward_sum = 0
         episode_reward_sum_best = -500
@@ -201,10 +201,10 @@ class Session():
                 tf.stack(states), discounted_rewards)
             loss_a = self.model.a.train_on_batch(tf.stack(states), combined)
 
-            #combine losses
-            loss=[loss_c, loss_a]
+            # combine losses
+            loss = [loss_c, loss_a]
 
-            #log them
+            # log them
             with self.train_writer.as_default():
                 tf.summary.scalar('tot_loss', np.sum(loss), batch)
 
@@ -263,7 +263,10 @@ class Session():
 
 if __name__ == "__main__":
 
-    # "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1",  "HopperBulletEnv-v0", "(LunarLanderContinuous-v2")
+    """
+    Suitable for the following environments:
+    "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1")
+    """
 
     """example for trying to run "ContinuousCartPoleEnv" until convergence"""
     # session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv",

@@ -320,9 +320,9 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 ### Discrete-action-space A2C agent
 
-- Base model did not meat gym's 'problem solved' criteria
+- Base model did not meet gym's 'problem solved' criteria
 - Improved agent (featuring state normalization and mish-activation) solved it in **21120  steps**
-- please follow and run **'discrete.ipynb'** and consider it an interactive report for the discrete case
+- please follow and run **'discrete.ipynb'** for more details and consider it an interactive report for the discrete case
 
 ### Continuous-action-space A2C agent
 
