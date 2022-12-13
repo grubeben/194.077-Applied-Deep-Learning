@@ -233,7 +233,7 @@ _Advantages_
 
 4. Loss functions (for n-step A2C):
 
-   4.1) Critic: $R_{t}+R_{t+1}*gamma+$. . $+R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
+   4.1) Critic: $R_{t}+R_{t+1}*gamma+$. . $+$ $R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
 
    4.2) Actor: $\sum{log_{prob}(a_t|s_t)}*A(s,a_t)$ for $t=t,..,t+n$
 
@@ -246,7 +246,7 @@ Note: If we want to penalise large differences between $P(a_{chosen}|s)-P(a_i|s)
 #### for ending problems (such as the PoleCart, which terminates once the stick is inclined too far to one side)
 
 1.  initialize $s_0$
-2.  initialize trace vectors (storage units for store $r_t,..,r_{t+n}$ and $$V_t,..,V_{t+n}$
+2.  initialize trace vectors (storage units for store $r_t,..,r_{t+n}$ and $V_t,..,V_{t+n}$
 3.  Loop while $s_t$ is not terminal
 4.  compute action propabilities $probs_a=pi(.|s)$
 5.  choose action $a_t$ by randomly sampling from distribution
