@@ -331,7 +331,7 @@ Why and what exactly does that mean? Let's answer this during another session..
 - However, some lucky runs deliver results, the overall architecture seems to be sound 
   * In such cases: good learning within the first 100 episodes, just to collapse after
   * Those 'lucky' models have been stored and can be seen in action at 'continuous.ipynb'
-  
+
 - The following improvements were tried:
   * state normalization
   * batch normalization
@@ -347,6 +347,7 @@ Why and what exactly does that mean? Let's answer this during another session..
 However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/comments/jqgrtg/sharing_network_for_actor_critic_methods/) suggest that this might impact learning success majorly.
 
 </details>
+
 ---
 
 ## TODOs & INTERESTING ADDITIONS
