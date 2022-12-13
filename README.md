@@ -2,7 +2,7 @@
 
 Inspection of the performance and methodics of policy-based reinforcement learning algorithms by implementation of an n-step A2C agent
 
-![A2C agent performance for different configurations](obs-samples/rewards_over_time_a2c_discrete.PNG)
+![Discrete-Action-Space-A2Cagent performance for different configurations](obs-samples/rewards_over_time_a2c_discrete.PNG "Discrete-Action-Space-A2Cagent performance for different configurations")
 
 ---
 
