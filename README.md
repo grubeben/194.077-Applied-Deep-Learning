@@ -326,7 +326,7 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 ### Continuous-action-space A2C agent
 
-- More troublesome than discrete case; at current state still unstable training
+- More troublesome than discrete case; initially unstable training
 - However, some lucky runs deliver results, the overall architecture seems to be sound 
   * In such cases: good learning within the first 100 episodes, just to collapse after
   * Those 'lucky' models have been stored and can be seen in action at **'continuous.ipynb'**
@@ -342,8 +342,13 @@ Why and what exactly does that mean? Let's answer this during another session..
   * utilization of custom implementations of the same environment
   * pretraining of critic-NN
 
+- none with success
+
 - **POTENTIAL ROOT OF ERROR:** Experimenting with 'Acrobat-v0()' (larger action-space than 'CartPole-v1()') in the discrete-action-agent case showed similar behaviour on some occasions. I believe that with increasing complexity of the policy-options (action-space) decoupeling of actor and critic becomes more important. Yet, I did not suspect this when I started out and my architecture uses one NN with two branches, which makes it impossible to set different learning rates for the update.
 However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/comments/jqgrtg/sharing_network_for_actor_critic_methods/) suggest that this might impact learning success majorly.
+
+- So I implemented a new actor-critic with 2 NN, this led
+  * to way better NN convergence, because as suggested in several articles the learning rate of the critic is now way higher than the actor one (actor can only make good decisions once critic estimates values well)
 
 </details>
 
