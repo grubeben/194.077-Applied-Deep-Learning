@@ -1,5 +1,4 @@
 import gym
-import pybullet as p
 import numpy as np
 import tensorflow as tf
 import tensorflow_addons as tfa
@@ -30,23 +29,25 @@ class A2CAgent(keras.Model):
         self.actor_loss_weight = 1
         self.entropy_loss_weight = 0.04
         self.batch_size = 64
-        self.render_size= 10 #render every 10 steps
+        self.render_size = 10  # render every 10 steps
         self.gamma = 0.95
         self.obs_dim = obs_dim
-        self.state_space_samples = state_space_samples
 
         """state"""
         self.s0 = s0
 
         """action space"""
-        self.action_space_low = act_space_high
-        self.action_space_high = act_space_low
+        self.action_space_low = [(float(str(
+            act_space_low)))]  # work around in order to process every environments action space input
+        self.action_space_high = [(float(str(act_space_high)))]
+        #print(self.action_space_high,self.action_space_low, type(self.action_space_high),"\n")
 
         """ NN"""
         self.add_branch_layer = add_branch_layer
         self.batch_normalization = batch_normalization
         self.state_normalization = state_normalization
-        self.nodes_per_dense_layer = 64
+        self.state_space_samples = state_space_samples
+        self.nodes_per_dense_layer = 40
         self.my_weight_dict = {}
 
         # state normalisation
@@ -101,7 +102,7 @@ class A2CAgent(keras.Model):
     def actor_loss(self, combined, norm_dist):
         actions = combined[:, 0]  # first column holds a_t
         advantages = combined[:, 1]  # second column holds A_t
-        loss = -norm_dist.log_prob(actions)*advantages
+        loss = - norm_dist.log_prob(actions)*advantages
 
         return loss * self.actor_loss_weight + self.entropy_loss_weight * self.entropy_loss(norm_dist)
 
@@ -137,8 +138,6 @@ class A2CAgent(keras.Model):
         mu = self.my_weight_dict["mu"](norm)
         sigma = self.my_weight_dict["sigma_inbetween1"](norm)
         sigma = self.my_weight_dict["sigma"](sigma)
-
-        # https://www.tensorflow.org/probability/examples/TensorFlow_Distributions_Tutorial
         norm_dist = tfp.distributions.Normal(mu, sigma)
         return value, norm_dist  # shallow structure
 
@@ -147,12 +146,9 @@ class A2CAgent(keras.Model):
             state)  # runs call() from above
         # sample from prob distribution and remove batch dimension
         action = tf.squeeze(norm_dist.sample(1), axis=0)
-
-        # action = tf.clip_by_value(action, -10,10) #fit into action space for CartPoleContinuousBulletEnv
-        # fit into action space MountainCar gym-CartPole
-        action = tf.clip_by_value(action, -1, 1)
-        # action = tf.clip_by_value(action, -2,2) #fit into action space  PENDULUM
-
+        # fit into action space
+        action = tf.clip_by_value(
+            action, self.action_space_low, self.action_space_high)
         return action, value
 
 
@@ -167,12 +163,9 @@ class A2CAgent(keras.Model):
 # next: decrease general learning rate ==> nope
 # next: batch normalisation?
 
-# next: pretrain value network?
+# next: pretrain value network? nope
+# probably branch approach is a problem..
 
 # TODO
 # add normalization etc to discrete, make graphs for diffrerent versions for report
 # set up basic tests (in train loop?)
-# make continuous work somehow
-# read the docs?
-# test function!!!
-# visualization for test policy
