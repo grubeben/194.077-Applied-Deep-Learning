@@ -264,33 +264,43 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 1. Agents and training
 
-  1.1 **a2cgent_discrete.py**
-    - holds _Agent()_ class
-    - with methodes to define NN architecture
-    - and itt's related functions (call, value/action)
-    - loss functions
-  1.2  **train-discrete.py**
-    - holds _Session()_ class
-    - initiates environment
-    - holds train() and test() methods
-    - point of interaction for user to set options for _Agent()_-object initialization
-    - policy-saving and -loading
-  1.3  **discrete.ipynb**
-    - showcase for discrete-action-space a2c-agent
-    - based on **1.,2.**
-    - holds convergence analysis for different agent configurations
-  1.4  **continuous-cartpole-env.py**
-    - holds a custom CartPole environment with continuous action-space forked from [here](https://gist.github.com/iandanforth/e3ffb67cf3623153e968f2afdfb01dc8) and adapted such that the render() method integrates with the newest gym= 0.23
+  - **a2cgent_discrete.py**
+
+    * holds _Agent()_ class
+    * with methodes to define NN architecture
+    * and itt's related functions (call, value/action)
+    * loss functions
+
+  - **train-discrete.py**
+
+    * holds _Session()_ class
+    * initiates environment
+    * holds train() and test() methods
+    * point of interaction for user to set options for _Agent()_-object initialization
+    * policy-saving and -loading
+
+  - **discrete.ipynb**
+
+    * showcase for discrete-action-space a2c-agent
+    * based on **1.,2.**
+    * holds convergence analysis for different agent configurations
+
+  - **continuous-cartpole-env.py**
+
+    * holds a custom CartPole environment with continuous action-space forked from [here](https://gist.github.com/iandanforth/e3ffb67cf3623153e968f2afdfb01dc8) and adapted
+    such that the render() method integrates with the newest gym= 0.23
 
 2. Utils
 
-  2.1  **training-discrete/** **training-continuous/**
-    - hold (pretrained) models
-    - store training data (rewards, losses) for TensorBoard visualisation
+  - **training-discrete/** **training-continuous/**
 
-  2.2  **obs-samples/** **theory/**
-    - holds sample-space data for 'CartPole-problem' that can be used for state normalization
-    - holds some links to related articles and work I find useful
+    * hold (pretrained) models
+    * store training data (rewards, losses) for TensorBoard visualisation
+
+  - **obs-samples/** **theory/**
+  
+    * holds sample-space data for 'CartPole-problem' that can be used for state normalization
+    * holds some links to related articles and work I find useful
 
 ---
 
