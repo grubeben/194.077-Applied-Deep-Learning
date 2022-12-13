@@ -4,7 +4,9 @@ Inspection of the performance and methodics of policy-based reinforcement learni
 
 ---
 
-## Revision after feedback (1. Nov. 2022)
+## GOALS
+
+<details><summary>Get details</summary>
 
 I will prioritize implementing an A2C- agent and then and only then work on a DQN-agent and the comparative aspects of the project.
 
@@ -32,13 +34,15 @@ I will prioritize implementing an A2C- agent and then and only then work on a DQ
 
 ### _Note: The agents above will be restricted to "ending problems" (= such ones that feature episodes)_
 
+</details>
+
 ---
 
 ## STEPS& MILESTONES
 
-Steps that correspond to BONUS-quests are marked with [BONUS].
-
 <details><summary>Get details</summary>
+
+Steps that correspond to BONUS-quests are marked with [BONUS].
 
 ### 1. Solidify understanding about policy-based methods
 
