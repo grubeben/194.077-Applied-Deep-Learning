@@ -42,29 +42,21 @@ Steps that correspond to BONUS-quests are marked with [BONUS].
 
 ### 1. Solidify understanding about policy-based methods
 
-<details><summary>Get details</summary>
- 
-*planned:* 10h *actual:* ~15h
- 
-While I have some experience with Q-learning and DQ-learning agents, I have not implemented algorithms from the policy-based family.
-* **How:** read relevant chapters in Sutton& Barto (2nd edition)[^1], follow relevant lecture material (Deep Mind - Lecture Series) [^2]
-* **Result:** I composed a little introduction to policy-based methods to document the underlying theory [here](#foundations)
+_planned:_ 10h _actual:_ ~15h
 
-</details>
+While I have some experience with Q-learning and DQ-learning agents, I have not implemented algorithms from the policy-based family.
+
+- **How:** read relevant chapters in Sutton& Barto (2nd edition)[^1], follow relevant lecture material (Deep Mind - Lecture Series) [^2]
+- **Result:** I composed a little introduction to policy-based methods to document the underlying theory [here](#foundations)
 
 ### 2. Set error-metric
 
-<details><summary>Get details</summary>
- 
-*planned:* 5h *actual:* 2h
+_planned:_ 5h _actual:_ 2h
 
 - **Policy success:** for gym- environments is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
 - **Convergence:** $loss_{total} = loss_{actor} + loss_{critic} + loss_{entropy}$. I measure the total loss per batch (a constant number of steps) and while i refrain from setting a numberic goal here, the metrics behavior over time should clearly indicate whether the agent reached a stable state
-</details>
 
 ### 3. Decide for an environment
-
-<details><summary>Get details</summary>
 
 _planned:_ 8h _actual:_ 8h
 
@@ -80,26 +72,18 @@ I overestimated the importance of this step in the beginning, because I had not 
 For the start it does not matter much how fascinating an environment might be, the methods are the same no matter how large the state- and action-spaces.
 In order to proof functionality we will have to start on simple tasks anyways.
 
-</details>
-
 ### 4. Hacking time I - discrete action-space A2C agent
 
-<details><summary>Get details</summary>
- 
-*planned:* 15h *actual:* ~22h (10h + 3h + 4h + 4h)
+_planned:_ 15h _actual:_ ~22h (10h + 3h + 4h + 4h)
 
 - Implement the A2C- agent for discrete action spaces.
 - Set up training-data-visualisation (Tensorboard) and policy-saving infrastructure.
 - Read about posssible improvements and implement them
 - Bring all of the above into neat, representable shape
 
-</details>
-
 ### 5. Hacking time II - continuous action-space A2C agent
 
-<details><summary>Get details</summary>
- 
-*planned:* 12h *actual:* 20h [and at current point still learning progress is still unstable]
+_planned:_ 12h _actual:_ 20h [and at current point still learning progress is still unstable]
 
 Making this work appears to demand way more than just adapting NN-output, call and loss functions.
 
@@ -121,51 +105,34 @@ However, some runs deliver results, so the overall architecture seems to be soun
 **POTENTIAL ROOT OF ERROR:** The agent uses one NN with two branches (for actor and critic), which makes it impossible to set different learning rates for the update.
 However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/comments/jqgrtg/sharing_network_for_actor_critic_methods/) suggest that this might impact learning success majorly.
 
-</details>
-
 ### 7. [BONUS] Hacking time III
 
-<details><summary>Get details</summary>
- 
-*planned:* 12h *actual: /*
+_planned:_ 12h _actual: /_
 
 - Implement DQ- agent.
 - form hypotheis on behaviour compared to policy-based method
 
-</details>
-
 ### 6. Policy performance and convergence analysis/ [BONUS] comparative study
 
-<details><summary>Get details</summary>
- 
-*planned:* 10h *actual: 10h*
+_planned:_ 10h _actual: 10h_
 
 - Train and document agent performance and convergence for different versions
 - Implement test function that will run best agent
 - Verify results by visualisation of the policy
 - Bring results into form for delivery
-</details>
 
 ### 8. Presentation
 
-<details><summary>Get details</summary>
- 
-*planned:* 4h *actual:
+_planned:_ 4h \*actual:
 
 Prepare for presentation.
 
-</details>
-
 ### 9. Application/ Visualisation
 
-<details><summary>Get details</summary>
- 
- *planned:* 6h
+_planned:_ 6h
 
 - Make a comparing demonstration of policies obtained by policy- vs action-value-based agent
 - If possible highlight actions that demonstrate significant peculiarities of the respective agent
-
-</details>
 
 ---
 
@@ -256,17 +223,17 @@ _Advantages_
 
    3.1) Critic: We want $TD=R_{t}+gamma*V_{s+1}-V_{s}=A(s,a)$ to be minimal, which is why we define the loss function as $MSE(A)=A(s,a)^2$
 
-   3.2) Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_t)*log_prob(a_t|s_t)$. This makes sense intuitevely, if the agent decided on an unlikely action (under current policy) but obtained a large advantage from doing so, the loss will be high (we want the policy to be changed towards: High-advantage-yielding actions shall correspond to high probabilities)
+   3.2) Actor: (min 1:16 [^2]) We have to generate a "semi-gradient"=loss from our defined gradient (since Tensorflow optimizers demand one). We do this by multiplying the advantage with the likelihood of taking the action taken: $A(s,a_t)*log_{prob}(a_t|s_t)$. This makes sense intuitevely, if the agent decided on an unlikely action (under current policy) but obtained a large advantage from doing so, the loss will be high (we want the policy to be changed towards: High-advantage-yielding actions shall correspond to high probabilities)
 
 4. Loss functions (for n-step A2C):
 
-   4.1) Critic: $R_{t}+R_{t+1}*gamma+..+R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
+   4.1) Critic: $R_{t}+R_{t+1}*gamma+$..$+R_{t+n-1}*gamma^{n-1}+gamma^{n}*V_{s+n}*-V_{s}$
 
-   4.2) Actor:$\sum{log_prob(a_t|s_t)}*A(s,a_t)$ for $t=t,..,t+n$
+   4.2) Actor:$\sum{log_{prob}(a_t|s_t)}*A(s,a_t)$ for $t=t,..,t+n$
 
 !NOTE!: In order to enable more efficient training and computations we will use only one NN. Only the last network layer(s) will be different in order to faciliate distinct propability or value output (branches). But what does this mean for the loss functions? We simply sum them up: $loss_{total} = loss_{actor}+loss_{critic}$
 
-Note: If we want to penalise large differences between $P(a_{chosen}|s)-P(_i|s)$, we add a term for the entropy-loss (this should increase stability)
+Note: If we want to penalise large differences between $P(a_{chosen}|s)-P(a_i|s)$, we add a term for the entropy-loss (this should increase stability)
 
 ### Algorithm
 
@@ -295,42 +262,35 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 ## Classes and files
 
-1.  **a2cgent_discrete.py**
+1. Agents and training
 
-- holds _Agent()_ class
-- with methodes to define NN architecture
-- and itt's related functions (call, value/action)
-- loss functions
+  1. **a2cgent_discrete.py**
+    - holds _Agent()_ class
+    - with methodes to define NN architecture
+    - and itt's related functions (call, value/action)
+    - loss functions
+  2.  **train-discrete.py**
+    - holds _Session()_ class
+    - initiates environment
+    - holds train() and test() methods
+    - point of interaction for user to set options for _Agent()_-object initialization
+    - policy-saving and -loading
+  2.  **discrete.ipynb**
+    - showcase for discrete-action-space a2c-agent
+    - based on **1.,2.**
+    - holds convergence analysis for different agent configurations
+  2.  **continuous-cartpole-env.py**
+    - holds a custom CartPole environment with continuous action-space forked from [here](https://gist.github.com/iandanforth/e3ffb67cf3623153e968f2afdfb01dc8) and adapted such that the render() method integrates with the newest gym= 0.23
 
-2.  **train-discrete.py**
+2. Utils
 
-- holds _Session()_ class
-- initiates environment
-- holds train() and test() methods
-- point of interaction for user to set options for _Agent()_-object initialization
+  2.  **training-discrete/** **training-continuous/**
+    - hold (pretrained) models
+    - store training data (rewards, losses) for TensorBoard visualisation
 
-* policy-saving and -loading
-
-2.  **discrete.ipynb**
-
-- showcase for discrete-action-space a2c-agent
-- based on **1.,2.**
-- holds convergence analysis for different agent configurations
-
-2.  **continuous-cartpole-env.py**
-
-- holds a custom CartPole environment with continuous action-space forked from [here](https://gist.github.com/iandanforth/e3ffb67cf3623153e968f2afdfb01dc8) and adapted such that the render() method integrates with the newest gym= 0.23
-
-2.  **training-discrete/** **training-continuous/**
-
-- hold (pretrained) models
-- store training data (rewards, losses) for TensorBoard visualisation
-
-2.  **obs-samples/** **theory/**
-
-- holds sample-space data for 'CartPole-problem' that can be used for state normalization
-
-- holds some links to related articles and work I find useful
+  2.  **obs-samples/** **theory/**
+    - holds sample-space data for 'CartPole-problem' that can be used for state normalization
+    - holds some links to related articles and work I find useful
 
 ---
 
