@@ -338,6 +338,8 @@ However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/
 
 - Watch the distinct-NN agent at **'continuous_distinct_NN.ipynb'**
 
+### The *'SHOWCASE_...ipynb'* files are essentially the heart of the report and to be browsed, in the order they were introduced in this section
+
 </details>
 
 ---
