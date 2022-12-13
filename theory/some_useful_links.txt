@@ -1,0 +1,17 @@
+*articles
+https://gerardmaggiolino.medium.com/creating-openai-gym-environments-with-pybullet-part-1-13895a622b24
+https://medium.com/analytics-vidhya/learning-to-walk-using-reinforcement-learning-4e237aaf64a0
+https://iq.opengenus.org/activation-functions-ml/
+
+*convergence plot inspiration
+https://adventuresinmachinelearning.com/a2c-advantage-actor-critic-tensorflow-2/
+
+*greadient clipping / mish activation/ continous task
+https://medium.com/deeplearningmadeeasy/advantage-actor-critic-continuous-case-implementation-f55ce5da6b4c
+
+*git hub projects
+https://github.com/rayush7/continuous_mountain_car_problem_actor_critic_rl_solution
+https://github.com/andy-psai/MountainCar_ActorCritic/blob/master/RL%20Blog%20FINAL%20MEDIUM%20code%2002_12_19.ipynb
+https://github.com/gingsi/rl-continuouscartpole
+https://github.com/hermesdt/reinforcement-learning/blob/master/a2c/cartpole_a2c_episodic.ipynb
+https://github.com/pat-coady/trpo/tree/master/trpo ==> architecture inspiration
