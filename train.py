@@ -1,3 +1,4 @@
+import logging
 import a2cagent
 import gym
 import pygame
@@ -10,6 +11,7 @@ import os
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
+# for WSL rendering solution
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
 from IPython import display
@@ -50,7 +52,7 @@ class Session():
         if (env_str == "Acrobot-v1"):
             self.act_dim = 3  # has to be set manually for agent class to understand
 
-        # state normalisation
+        # load state normalization data
         self.state_space_samples = np.array(
             [self.env.observation_space.sample() for x in range(6400)])
         if (env_str == "CartPole-v1"):
@@ -171,12 +173,16 @@ class Session():
             with self.train_writer.as_default():
                 tf.summary.scalar('tot_loss', np.sum(loss), batch)
 
-            # make convergence check every 10 batches and only if reward was above necessary average
+            # make convergence check only if reward was above necessary average (checking after every episode is costly)
             if (episode_reward_sum > self.converged_reward_limit):
                 if (np.mean(episode_rewards) >= episode_reward_sum):
                     print("\nCONVERGED in ", batch, " batches / ",
                           batch*self.model.batch_size, " steps")
                     return 0
+
+        # max_num_batches reached without convergence
+        print("\nNOT CONVERGED in ", batch, " batches / ",
+              batch*self.model.batch_size, " steps")
 
     def test(self, num_episodes):
         """
@@ -221,10 +227,15 @@ class Session():
 
 if __name__ == "__main__":
 
-    """example for running pretrained "CartPole-v1" until convergence"""
-    # session = Session(converged_reward_limit=195, env_str="CartPole-v1", specification="no_normalization", activation_function='relu', initializer='normal', state_normalization=False,
-    #                   batch_normalization=False, use_existing_policy=False)
-    # session.train(max_num_batches=1000)
+    """Attempt to silence TF I and W (not working)"""
+    # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # WARNING
+    # logging.getLogger('tensorflow').setLevel(logging.FATAL)
+    # tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
+    """example for running "CartPole-v1" until convergence"""
+    session = Session(converged_reward_limit=195, env_str="CartPole-v1", specification="no_normalization", activation_function='relu', initializer='normal', state_normalization=False,
+                      batch_normalization=False, use_existing_policy=False)
+    session.train(max_num_batches=1000)
 
     """example for running pretrained "CartPole-v1" until convergence"""
     # session = Session(converged_reward_limit=195, env_str="CartPole-v1", specification="based_on_pretrained", activation_function='mish', initializer='xavier', state_normalization=True,
