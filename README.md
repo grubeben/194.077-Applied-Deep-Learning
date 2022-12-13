@@ -292,12 +292,12 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 2. Utils
 
-    - **training-discrete/** **training-continuous/**
+    - **training-discrete/** and **training-continuous/**
 
       * hold (pretrained) models
       * store training data (rewards, losses) for TensorBoard visualisation
 
-    - **obs-samples/** **theory/**
+    - **obs-samples/** and **theory/**
 
       * holds sample-space data for 'CartPole-problem' that can be used for state normalization
       * holds some links to related articles and work I find useful
