@@ -21,6 +21,8 @@ Inspection of the performance and methodics of policy-based reinforcement learni
    - Employment of the agent in a PyBullet (physics-based) environment
    - Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
+3. A little [cmpendix](#foundations) about policy-based methods 
+
 ### I will treat the following as BONUS (if time allows [it did not]):
 
 3. Implementation of a DQ- agent for at least one of the action-space scenarios described above
@@ -264,7 +266,9 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 ---
 
-## Classes and files
+## CLASSES AND FILES
+
+<details><summary>Get details</summary>
 
 1. Agents and training
 
@@ -306,6 +310,43 @@ Why and what exactly does that mean? Let's answer this during another session..
       * holds sample-space data for 'CartPole-problem' that can be used for state normalization
       * holds some links to related articles and work I find useful
 
+</details>
+
+---
+
+## RESULTS
+
+<details><summary>Get details</summary>
+
+### Discrete-action-space A2C agent
+
+- Base model did not meat gym's 'problem solved' criteria
+- Improved agent (featuring state normalization and mish-activation) solved it in **21120  steps**
+- please follow and run 'discrete.ipynb' and consider it an interactive report for the discrete case
+
+### Continuous-action-space A2C agent
+
+- Way more troublesome than discrete case
+- At current state still unstable training
+- However, some lucky runs deliver results, the overall architecture seems to be sound 
+  * In such cases: good learning within the first 100 episodes, just to collapse after
+  * Those 'lucky' models have been stored and can be seen in action at 'continuous.ipynb'
+  
+- The following improvements were tried:
+  * state normalization
+  * batch normalization
+  * reward customization: introduction of penalties for terminal states
+  * network architecture: addtional layers, number of nodes/layer
+  * **learning rate**
+  * loss weights
+  * introduce gradient clipping in Adam-optimizer
+  * utilization of custom implementations of the same environment
+  * pretraining of critic-NN
+
+- **POTENTIAL ROOT OF ERROR:** Experimenting with 'Acrobat-v0()' (larger action-space than 'CartPole-v1()') in the discrete-action-agent case showed similar behaviour on some occasions. I believe that with increasing complexity of the policy-options (action-space) decoupeling of actor and critic becomes more important. Yet, I did not suspect this when I started out and my architecture uses one NN with two branches, which makes it impossible to set different learning rates for the update.
+However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/comments/jqgrtg/sharing_network_for_actor_critic_methods/) suggest that this might impact learning success majorly.
+
+</details>
 ---
 
 ## TODOs & INTERESTING ADDITIONS
