@@ -21,7 +21,7 @@ Inspection of the performance and methodics of policy-based reinforcement learni
    - Employment of the agent in a PyBullet (physics-based) environment
    - Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
-3. A little [cmpendix](#foundations) about policy-based methods 
+3. A little [compendix](#foundations) about policy-based methods 
 
 ### I will treat the following as BONUS (if time allows [it did not]):
 
@@ -89,7 +89,7 @@ _planned:_ 15h _actual:_ ~22h (10h + 3h + 4h + 4h)
 
 ### 5. Hacking time II - continuous action-space A2C agent
 
-_planned:_ 12h _actual:_ 20h [and at current point still learning progress is still unstable]
+_planned:_ 12h _actual:_ 24h [and at current point still learning progress is still unstable]
 
 Making this work appears to demand way more than just adapting NN-output, call and loss functions.
 
@@ -116,7 +116,7 @@ However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/
 _planned:_ 12h _actual: /_
 
 - Implement DQ- agent.
-- form hypotheis on behaviour compared to policy-based method
+- form hypothesis on behaviour compared to policy-based method
 
 ### 6. Policy performance and convergence analysis/ [BONUS] comparative study
 
@@ -142,7 +142,7 @@ _planned:_ 6h
 
 ---
 
-## Sum of steps: _planned_ ~80h _actual_ ~
+#### Sum of steps: _planned_ ~80h _actual_ ~81h (excluding)
 
 </details>
 
