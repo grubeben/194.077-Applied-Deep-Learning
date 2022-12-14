@@ -306,7 +306,7 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 - Base model did not meet gym's 'problem solved' criteria
 - Improved agent (featuring state normalization and mish-activation) solved it in **21120  steps**
-- please follow and run **'discrete.ipynb'** for more details and consider it an interactive report for the discrete case
+- please follow and run **'REPORT_discrete.ipynb'** for more details and consider it an interactive report for the discrete case
 
 ### Continuous-action-space A2C agent
 
@@ -327,7 +327,7 @@ Why and what exactly does that mean? Let's answer this during another session..
   * pretraining of critic-NN
 
 - None with great success
-- Watch the unstable shared-NN agent at **'continuous_shared_NN.ipynb'**
+- Watch the unstable shared-NN agent at **'REPORT_continuous_shared_NN.ipynb'**
 
 - **POTENTIAL ROOT OF ERROR:** Experimenting with 'Acrobat-v0()' (larger action-space than 'CartPole-v1()') in the discrete-action-agent case showed similar behaviour on some occasions. I believe that with increasing complexity of the policy-options (action-space) decoupeling of actor and critic becomes more important. Yet, I did not suspect this when I started out and my architecture uses one NN with two branches, which makes it impossible to set different learning rates for the update.
 However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/comments/jqgrtg/sharing_network_for_actor_critic_methods/) suggest that this might impact learning success majorly.
@@ -336,10 +336,10 @@ However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/
   * to way better NN convergence, because as suggested in several articles the learning rate of the critic is now way higher than the actor one (actor can only make good decisions once critic estimates values well)
   * but while the agent converges, it still does not consistently converge towards 'high-reward' policies
 
-- Watch the distinct-NN agent at **'continuous_distinct_NN.ipynb'**
+- Watch the distinct-NN agent at **'REPORT_continuous_distinct_NN.ipynb'**
 
 ### NOTE: 
-#### *'SHOWCASE_...ipynb'* files are essentially the heart of the report and to be browsedin the order they were introduced in this section
+#### *'REPORT_...ipynb'* files are essentially the heart of the report and to be browsedin the order they were introduced in this section
 
 </details>
 
