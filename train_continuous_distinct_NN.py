@@ -29,6 +29,13 @@ class Session():
     env_str:                ["ContinuousCartPoleEnv" "CartPoleContinuousBulletEnv-v0" "MountainCarContinuous-v0"]
     converged_reward_limit: If mean reward over 100 episodes is >= 'converged_reward_limit' training stops
                             [NOTE: only well defined for CartPole, for every other environment set to a very high number and adjust with 'train(max_num_batches)' only]
+    gradient_clipnorm:      None/float introduces gradient clipping into the update of both NN.
+                            [NOTE: If set, all gradients are clipped such that their norm is <= gradient_clipnorm]
+    lr_actor = 0.00002      You can set your own learning rates
+    lr_critic = 0.001       You can set your own learning rates
+    activation_function:    ['relu', 'mish']
+    initializer:            ['normal', 'xavier']
+    state_normalization:    True/False
     specification:          string (You can add a custom add_on to the name of the session)
     use_existing_policy:    True/False
     policy:                 =None / path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_continuous/ as string
@@ -36,19 +43,20 @@ class Session():
                             (path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_continuous/ dir as string)]
     """
 
-    def __init__(self, converged_reward_limit=195, env_str="ContinuousCartPoleEnv", use_existing_policy=False, policy=None, specification=""):
+    def __init__(self, converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=None, lr_actor = 0.00002,
+        lr_critic = 0.001, activation_function='mish', initializer='xavier', state_normalization=True, use_existing_policy=False, policy=None, specification=""):
 
         # session parameter
         self.converged_reward_limit = converged_reward_limit
 
         # check for custom CARTPOLE ENV
-        custom_cart = False
+        self.custom_cart = False
         if (env_str == "ContinuousCartPoleEnv"):
-            custom_cart = True
+            self.custom_cart = True
 
         # load environment
         self.env = None
-        if (custom_cart == True):
+        if (self.custom_cart == True):
             self.env = continuous_cartpole.ContinuousCartPoleEnv()
         else:
             self.env = gym.make(env_str)
@@ -61,24 +69,23 @@ class Session():
         # load state normalization data
         self.state_space_samples = np.array(
             [self.env.observation_space.sample() for x in range(6400)])
-        if (env_str == "CartPoleContinuousBulletEnv-v0" or custom_cart == True):
+        if (env_str == "CartPoleContinuousBulletEnv-v0" or self.custom_cart == True):
             # method does not yield reasonable results for CartPole, so we load some historical state data
             self.state_space_samples = np.loadtxt(
                 os.getcwd()+"/obs-samples/norm_a.txt")
 
         # initiate agent
-        self.model = a2cagent.agent(
-            self.s0, self.act_space_high, self.act_space_low, self.obs_dim, self.state_space_samples)
+        self.model = a2cagent.agent(self.s0, self.act_space_high, self.act_space_low, self.obs_dim,self.state_space_samples, activation_function, initializer, state_normalization)
 
-        # set learning rates
-        lr_actor = 0.00002
-        lr_critic = 0.001
-
+        # gradient clipping
         # compile NN with inherited keras-method
-        self.model.a.compile(optimizer=keras.optimizers.Adam(
-            learning_rate=lr_actor), loss=self.model.a.actor_loss)
-        self.model.c.compile(optimizer=keras.optimizers.Adam(
-            learning_rate=lr_critic), loss=self.model.c.critic_loss)
+        if (gradient_clipnorm is None):
+            self.model.a.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_actor), loss=self.model.a.actor_loss)
+            self.model.c.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_critic), loss=self.model.c.critic_loss)
+
+        else:
+            self.model.a.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_actor, clipnorm=gradient_clipnorm), loss=self.model.a.actor_loss)
+            self.model.c.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_critic, clipnorm=gradient_clipnorm), loss=self.model.c.critic_loss)
 
         # load weights from existing model
         if use_existing_policy is True:
@@ -109,7 +116,11 @@ class Session():
         # set up ModelCheckpoints
         path_base = self.model.my_path+'/training_continuous/distinct_NN/' + \
             f"A2C{datetime.now().strftime('%d%m%Y%H%M')}" + \
-            env_str+'_mish_xavier_'+specification
+            env_str+'_mish_xavier_'+'lr'+str(lr_actor)+'_'+str(lr_critic)+'_'
+        if gradient_clipnorm is not None:
+            path_base += 'clip_'+str(gradient_clipnorm)+'_'
+        
+        path_base += specification
 
         self.model.a.model_path = path_base + '/model/actor/'
         self.model.c.model_path = path_base + '/model/critic/'
@@ -118,8 +129,9 @@ class Session():
         os.makedirs(self.model.c.model_path)
 
         # set up TensorBoard to visualize progress
+        self.model.tb_path=path_base+ '/tensorboard'
         self.train_writer = tf.summary.create_file_writer(
-            path_base + '/tensorboard')
+            self.model.tb_path )
 
     def train(self, max_num_batches):
         """ 
@@ -142,7 +154,7 @@ class Session():
             states = []
             dones = []
             for i in range(self.model.batch_size):
-                # run once for initiation
+                # set state
                 _ = self.model.a(s.reshape(1, -1))
                 _ = self.model.c(s.reshape(1, -1))
                 a_t, V_t = self.model.action_value(
@@ -233,19 +245,26 @@ class Session():
         episode = 1
         step = 0
         while (episode <= num_episodes):
-            # obtain action distibution
-            _ = self.model.actor(s.reshape(1, -1))
-            _ = self.model.critic(s.reshape(1, -1))
+            # set state
+            _ = self.model.a(s.reshape(1, -1))
+            _ = self.model.c(s.reshape(1, -1))
             a_t, V_t = self.model.action_value(
                 s.reshape(1, -1))  # choose action
             s_new, reward, done, _ = self.env.step(a_t.numpy()[0])  # make step
 
             # render1 - in jupyter notebook
-            if (step % (self.model.render_size) == 0):
-                clear_output(wait=True)
-                x = self.env.render(mode='rgb_array')
-                plt.imshow(x)
-                plt.show()
+            if self.custom_cart == True:
+                if (step % (self.model.render_size/5) == 0):
+                    clear_output(wait=True)
+                    x = self.env.render()
+                    plt.imshow(x)
+                    plt.show()
+            else:
+                if (step % self.model.render_size == 0):
+                    clear_output(wait=True)
+                    x = self.env.render(mode='rgb_array')
+                    plt.imshow(x)
+                    plt.show()
 
             episode_reward_sum += reward
 
@@ -269,11 +288,11 @@ if __name__ == "__main__":
     """
 
     """example for trying to run "ContinuousCartPoleEnv" until convergence"""
-    # session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv",
-    #                   specification="TEST", use_existing_policy=False)
-    # session.train(max_num_batches=1000)
+    session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=0.5, lr_actor=0.00001,lr_critic=0.001, activation_function='mish', initializer='xavier',
+                      specification="TEST", state_normalization=False, use_existing_policy=False)
+    session.train(max_num_batches=1000)
 
     """example for trying to run "MountainCarContinuous-v0" until convergence"""
-    session = Session(converged_reward_limit=90, env_str="MountainCarContinuous-v0",
-                      specification="TEST", use_existing_policy=False)
-    session.train(max_num_batches=1000)
+    # session = Session(converged_reward_limit=90, env_str="MountainCarContinuous-v0", gradient_clipnorm=0.5
+    #                   specification="TEST", use_existing_policy=False)
+    # session.train(max_num_batches=1000)

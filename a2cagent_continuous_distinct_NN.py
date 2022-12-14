@@ -14,9 +14,10 @@ import shutil
 import json
 
 class agent():
-    def __init__(self, s0, act_space_high, act_space_low, obs_dim, state_space_samples):
+    def __init__(self, s0, act_space_high, act_space_low, obs_dim, state_space_samples, activation_function, initializer, state_normalization):
         """conveniece"""
         self.my_path = os.getcwd()
+        self.tb_path=None
         self.render_size = 10  # render every 10 steps
 
         """parameter"""
@@ -34,8 +35,8 @@ class agent():
         self.action_space_high = [(float(str(act_space_high)))]
 
         """NNs"""
-        self.a=self.actor(state_space_samples)
-        self.c=self.critic(state_space_samples)
+        self.a=self.actor(state_space_samples, activation_function, initializer, state_normalization)
+        self.c=self.critic(state_space_samples, activation_function, initializer, state_normalization)
 
     """__METHODS__"""
 
@@ -72,7 +73,7 @@ class agent():
 
         """__CONSTRUCTOR__"""
 
-        def __init__(self, state_space_samples):
+        def __init__(self, state_space_samples, activation_function, initializer, state_normalization):
             super().__init__()
 
             """conveniece"""
@@ -83,7 +84,15 @@ class agent():
             self.entropy_loss_weight = 0.04
 
             """ NN"""
+            # network configuration
+            self.metadata = {
+                'activation.functions':     {'relu': keras.activations.relu, 'mish': tfa.activations.mish},
+                'initialization.functions': {'normal': keras.initializers.he_normal(), 'xavier': keras.initializers.glorot_normal()}
+            }
+            self.activation_function = self.metadata['activation.functions'][activation_function]
+            self.initializer = self.metadata['initialization.functions'][initializer]
             self.state_space_samples = state_space_samples
+            self.state_normalization= state_normalization
             self.nodes_per_dense_layer = 60
             self.actor_weight_dict = {}
 
@@ -92,9 +101,9 @@ class agent():
             self.actor_weight_dict["state_norm"].adapt(self.state_space_samples)
             # common layers
             self.actor_weight_dict["dense1"] = layers.Dense(
-                self.nodes_per_dense_layer, activation=tfa.activations.mish, kernel_initializer=keras.initializers.glorot_normal())
+                self.nodes_per_dense_layer, activation=self.activation_function, kernel_initializer=self.initializer)
             self.actor_weight_dict["dense2"] = layers.Dense(
-                self.nodes_per_dense_layer, activation=tfa.activations.mish, kernel_initializer=keras.initializers.glorot_normal())
+                self.nodes_per_dense_layer, activation=self.activation_function, kernel_initializer=self.initializer)
             # outlets
             self.actor_weight_dict["mu"] = layers.Dense(1)  # outlet 1
             self.actor_weight_dict["sigma_inbetween1"] = layers.Dense(1)
@@ -107,7 +116,8 @@ class agent():
             output: normal_distribution(a)
             """
             x = inputs
-            x = self.actor_weight_dict["state_norm"](x)
+            if (self.state_normalization == True):
+                x = self.actor_weight_dict["state_norm"](x)
             x = self.actor_weight_dict["dense1"](x)
             x = self.actor_weight_dict["dense2"](x)
             mu = self.actor_weight_dict["mu"](x)
@@ -139,15 +149,22 @@ class agent():
 
         """__CONSTRUCTOR__"""
 
-        def __init__(self, state_space_samples):
+        def __init__(self, state_space_samples, activation_function, initializer, state_normalization):
             super().__init__()
 
             """convenience"""
             self.model_path = 0
 
             """ NN"""
+            self.metadata = {
+                'activation.functions':     {'relu': keras.activations.relu, 'mish': tfa.activations.mish},
+                'initialization.functions': {'normal': keras.initializers.he_normal(), 'xavier': keras.initializers.glorot_normal()}
+            }
+            self.activation_function = self.metadata['activation.functions'][activation_function]
+            self.initializer = self.metadata['initialization.functions'][initializer]
+            self.state_normalization= state_normalization
             self.state_space_samples = state_space_samples
-            self.nodes_per_dense_layer = 300
+            self.nodes_per_dense_layer = 100
             self.critic_weight_dict = {}
 
             # state normalisation
@@ -157,9 +174,9 @@ class agent():
                 self.state_space_samples)
             # common layers
             self.critic_weight_dict["dense1"] = layers.Dense(
-                self.nodes_per_dense_layer, activation=tfa.activations.mish, kernel_initializer=keras.initializers.glorot_normal())
+                self.nodes_per_dense_layer, activation=self.activation_function, kernel_initializer=self.initializer)
             self.critic_weight_dict["dense2"] = layers.Dense(
-                self.nodes_per_dense_layer, activation=tfa.activations.mish, kernel_initializer=keras.initializers.glorot_normal())
+                self.nodes_per_dense_layer, activation=self.activation_function, kernel_initializer=self.initializer)
             # outlet
             self.critic_weight_dict["value"] = layers.Dense(1)
 
@@ -169,7 +186,8 @@ class agent():
             output: V(t)
             """
             x = inputs
-            x = self.critic_weight_dict["state_norm"](x)
+            if (self.state_normalization == True):
+                x = self.critic_weight_dict["state_norm"](x)
             x = self.critic_weight_dict["dense1"](x)
             x = self.critic_weight_dict["dense2"](x)
             value = self.critic_weight_dict["value"](x)
