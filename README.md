@@ -346,7 +346,7 @@ However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/
 - Watch the distinct-NN agent at **'REPORT_continuous_distinct_NN.ipynb'**
 
 ### NOTE: 
-#### *'REPORT_...ipynb'* files are essentially the heart of the report and to be browsedin the order they were introduced in this section
+#### *'REPORT_...ipynb'* files are essentially the heart of the report and to be browsed in the order they were introduced in this section. They also provide a way to visualize all learning relevant performance analysis conducted via TensorBoard
 
 </details>
 
