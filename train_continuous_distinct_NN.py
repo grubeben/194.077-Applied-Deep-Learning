@@ -36,6 +36,7 @@ class Session():
     activation_function:    ['relu', 'mish']
     initializer:            ['normal', 'xavier']
     state_normalization:    True/False
+    batch_normalization:    True/False
     specification:          string (You can add a custom add_on to the name of the session)
     use_existing_policy:    True/False
     policy:                 =None / path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_continuous/ as string
@@ -43,8 +44,8 @@ class Session():
                             (path to dir of form 'A2C281120221423CartPole-v1_mish' relative to AppliedDeep../training_continuous/ dir as string)]
     """
 
-    def __init__(self, converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=None, lr_actor = 0.00002,
-        lr_critic = 0.001, activation_function='mish', initializer='xavier', state_normalization=True, use_existing_policy=False, policy=None, specification=""):
+    def __init__(self, converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=None, lr_actor=0.00002,
+                 lr_critic=0.001, activation_function='mish', initializer='xavier', state_normalization=True, batch_normalization=False, use_existing_policy=False, policy=None, specification=""):
 
         # session parameter
         self.converged_reward_limit = converged_reward_limit
@@ -75,17 +76,22 @@ class Session():
                 os.getcwd()+"/obs-samples/norm_a.txt")
 
         # initiate agent
-        self.model = a2cagent.agent(self.s0, self.act_space_high, self.act_space_low, self.obs_dim,self.state_space_samples, activation_function, initializer, state_normalization)
+        self.model = a2cagent.agent(self.s0, self.act_space_high, self.act_space_low, self.obs_dim,
+                                    self.state_space_samples, activation_function, initializer, state_normalization, batch_normalization)
 
         # gradient clipping
         # compile NN with inherited keras-method
         if (gradient_clipnorm is None):
-            self.model.a.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_actor), loss=self.model.a.actor_loss)
-            self.model.c.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_critic), loss=self.model.c.critic_loss)
+            self.model.a.compile(optimizer=keras.optimizers.Adam(
+                learning_rate=lr_actor), loss=self.model.a.actor_loss)
+            self.model.c.compile(optimizer=keras.optimizers.Adam(
+                learning_rate=lr_critic), loss=self.model.c.critic_loss)
 
         else:
-            self.model.a.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_actor, clipnorm=gradient_clipnorm), loss=self.model.a.actor_loss)
-            self.model.c.compile(optimizer=keras.optimizers.Adam(learning_rate=lr_critic, clipnorm=gradient_clipnorm), loss=self.model.c.critic_loss)
+            self.model.a.compile(optimizer=keras.optimizers.Adam(
+                learning_rate=lr_actor, clipnorm=gradient_clipnorm), loss=self.model.a.actor_loss)
+            self.model.c.compile(optimizer=keras.optimizers.Adam(
+                learning_rate=lr_critic, clipnorm=gradient_clipnorm), loss=self.model.c.critic_loss)
 
         # load weights from existing model
         if use_existing_policy is True:
@@ -116,10 +122,10 @@ class Session():
         # set up ModelCheckpoints
         path_base = self.model.my_path+'/training_continuous/distinct_NN/' + \
             f"A2C{datetime.now().strftime('%d%m%Y%H%M')}" + \
-            env_str+'_mish_xavier_'+'lr'+str(lr_actor)+'_'+str(lr_critic)+'_'
+            env_str+'_'+str(activation_function)+'_'+str(initializer)+'_lr_'+str(lr_actor)+'_'+str(lr_critic)+'_'
         if gradient_clipnorm is not None:
             path_base += 'clip_'+str(gradient_clipnorm)+'_'
-        
+
         path_base += specification
 
         self.model.a.model_path = path_base + '/model/actor/'
@@ -129,16 +135,16 @@ class Session():
         os.makedirs(self.model.c.model_path)
 
         # set up TensorBoard to visualize progress
-        self.model.tb_path=path_base+ '/tensorboard'
+        self.model.tb_path = path_base + '/tensorboard'
         self.train_writer = tf.summary.create_file_writer(
-            self.model.tb_path )
+            self.model.tb_path)
 
     def train(self, max_num_batches):
         """ 
         main training loop
         max_num_batches: number of batches after which training stops even if convergence is not reached
         """
-        
+
         episode_rewards = np.empty(100)
         episode_reward_sum = 0
         episode_reward_sum_best = -500
@@ -287,12 +293,29 @@ if __name__ == "__main__":
     "CartPoleContinuousBulletEnv-v0", "ContinuousCartPoleEnv", "MountainCarContinuous-v0", "Pendulum-v1")
     """
 
-    """example for trying to run "ContinuousCartPoleEnv" until convergence"""
-    session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=0.5, lr_actor=0.00001,lr_critic=0.001, activation_function='mish', initializer='xavier',
-                      specification="TEST", state_normalization=False, use_existing_policy=False)
-    session.train(max_num_batches=1000)
-
     """example for trying to run "MountainCarContinuous-v0" until convergence"""
     # session = Session(converged_reward_limit=90, env_str="MountainCarContinuous-v0", gradient_clipnorm=0.5
     #                   specification="TEST", use_existing_policy=False)
     # session.train(max_num_batches=1000)
+
+    """example for trying to run "ContinuousCartPoleEnv" until convergence"""
+    # session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=None, lr_actor=0.00002, lr_critic=0.001, activation_function='relu', initializer='normal',
+    #                   specification="NO_NORMALIZATION", state_normalization=False, batch_normalization=False, use_existing_policy=False)
+    # session.train(max_num_batches=1000)
+
+    # session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=None, lr_actor=0.00002, lr_critic=0.001, activation_function='relu', initializer='xavier',
+    #                   specification="NO_NORMALIZATION", state_normalization=False, batch_normalization=False, use_existing_policy=False)
+    # session.train(max_num_batches=700)
+
+    # session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=None, lr_actor=0.00002, lr_critic=0.001, activation_function='relu', initializer='xavier',
+    #                   specification="STATE_NORMALIZATION", state_normalization=True, batch_normalization=True, use_existing_policy=False)
+    # session.train(max_num_batches=700)
+
+    session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=1.0, lr_actor=0.0002, lr_critic=0.001, activation_function='relu', initializer='normal',
+                      specification="STATE_BATCH_NORMALIZATION", state_normalization=False, batch_normalization=True, use_existing_policy=False)
+    session.train(max_num_batches=700)
+
+    # session = Session(converged_reward_limit=195, env_str="ContinuousCartPoleEnv", gradient_clipnorm=0.5, lr_actor=0.00002, lr_critic=0.001, activation_function='mish', initializer='normal',
+    #                   specification="STATE_NORMALIZATION", state_normalization=False, batch_normalization=False, use_existing_policy=False)
+    # session.train(max_num_batches=700)
+

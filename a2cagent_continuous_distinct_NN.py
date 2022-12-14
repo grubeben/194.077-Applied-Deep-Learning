@@ -13,16 +13,17 @@ import glob
 import shutil
 import json
 
+
 class agent():
-    def __init__(self, s0, act_space_high, act_space_low, obs_dim, state_space_samples, activation_function, initializer, state_normalization):
+    def __init__(self, s0, act_space_high, act_space_low, obs_dim, state_space_samples, activation_function, initializer, state_normalization, batch_normalization):
         """conveniece"""
         self.my_path = os.getcwd()
-        self.tb_path=None
+        self.tb_path = None
         self.render_size = 10  # render every 10 steps
 
         """parameter"""
-        self.gamma = 0.97
-        self.batch_size =64
+        self.gamma = 0.95
+        self.batch_size = 64
 
         """state"""
         self.s0 = s0
@@ -31,12 +32,14 @@ class agent():
         """action space"""
         """ work around in order to process every environment's action space input"""
         self.action_space_low = [(float(str(
-            act_space_low)))]  
+            act_space_low)))]
         self.action_space_high = [(float(str(act_space_high)))]
 
         """NNs"""
-        self.a=self.actor(state_space_samples, activation_function, initializer, state_normalization)
-        self.c=self.critic(state_space_samples, activation_function, initializer, state_normalization)
+        self.a = self.actor(state_space_samples, activation_function,
+                            initializer, state_normalization, batch_normalization)
+        self.c = self.critic(state_space_samples, activation_function,
+                             initializer, state_normalization, batch_normalization)
 
     """__METHODS__"""
 
@@ -73,7 +76,7 @@ class agent():
 
         """__CONSTRUCTOR__"""
 
-        def __init__(self, state_space_samples, activation_function, initializer, state_normalization):
+        def __init__(self, state_space_samples, activation_function, initializer, state_normalization, batch_normalization):
             super().__init__()
 
             """conveniece"""
@@ -92,13 +95,17 @@ class agent():
             self.activation_function = self.metadata['activation.functions'][activation_function]
             self.initializer = self.metadata['initialization.functions'][initializer]
             self.state_space_samples = state_space_samples
-            self.state_normalization= state_normalization
+            self.state_normalization = state_normalization
+            self.batch_normalization = batch_normalization
             self.nodes_per_dense_layer = 60
             self.actor_weight_dict = {}
 
-            # state normalisation
-            self.actor_weight_dict["state_norm"] = layers.Normalization(axis=-1)
-            self.actor_weight_dict["state_norm"].adapt(self.state_space_samples)
+            # normalisation
+            self.actor_weight_dict["state_norm"] = layers.Normalization(
+                axis=-1)
+            self.actor_weight_dict["state_norm"].adapt(
+                self.state_space_samples)
+            self.actor_weight_dict["batch_norm"] = layers.BatchNormalization()
             # common layers
             self.actor_weight_dict["dense1"] = layers.Dense(
                 self.nodes_per_dense_layer, activation=self.activation_function, kernel_initializer=self.initializer)
@@ -119,20 +126,20 @@ class agent():
             if (self.state_normalization == True):
                 x = self.actor_weight_dict["state_norm"](x)
             x = self.actor_weight_dict["dense1"](x)
+            if (self.batch_normalization == True):
+                x = self.actor_weight_dict["batch_norm"](x)
             x = self.actor_weight_dict["dense2"](x)
             mu = self.actor_weight_dict["mu"](x)
             sigma = self.actor_weight_dict["sigma_inbetween1"](x)
             sigma = self.actor_weight_dict["sigma"](sigma)
             norm_dist = tfp.distributions.Normal(mu, sigma)
-            return norm_dist  
-
+            return norm_dist
 
         def entropy_loss(self, norm_dist):
             """
             lets penalize high uncertainty (== wide streched norm dist)
             """
             return - norm_dist.entropy()
-
 
         def actor_loss(self, combined, norm_dist):
             """
@@ -141,15 +148,16 @@ class agent():
             """
             actions = combined[:, 0]  # first column holds a_t
             advantages = combined[:, 1]  # second column holds A_t
-            loss = -norm_dist.log_prob(actions)*advantages
+            loss = norm_dist.prob(actions)*advantages
+            loss=tf.math.reduce_mean(loss)
 
-            return loss * self.actor_loss_weight + self.entropy_loss_weight * self.entropy_loss(norm_dist)
+            return loss * self.actor_loss_weight #+ self.entropy_loss_weight * self.entropy_loss(norm_dist)
 
     class critic(keras.Model):
 
         """__CONSTRUCTOR__"""
 
-        def __init__(self, state_space_samples, activation_function, initializer, state_normalization):
+        def __init__(self, state_space_samples, activation_function, initializer, state_normalization, batch_normalization):
             super().__init__()
 
             """convenience"""
@@ -162,16 +170,18 @@ class agent():
             }
             self.activation_function = self.metadata['activation.functions'][activation_function]
             self.initializer = self.metadata['initialization.functions'][initializer]
-            self.state_normalization= state_normalization
+            self.state_normalization = state_normalization
+            self.batch_normalization = batch_normalization
             self.state_space_samples = state_space_samples
             self.nodes_per_dense_layer = 100
             self.critic_weight_dict = {}
 
-            # state normalisation
+            # normalisation
             self.critic_weight_dict["state_norm"] = layers.Normalization(
                 axis=-1)
             self.critic_weight_dict["state_norm"].adapt(
                 self.state_space_samples)
+            self.critic_weight_dict["batch_norm"] = layers.BatchNormalization()
             # common layers
             self.critic_weight_dict["dense1"] = layers.Dense(
                 self.nodes_per_dense_layer, activation=self.activation_function, kernel_initializer=self.initializer)
@@ -189,6 +199,8 @@ class agent():
             if (self.state_normalization == True):
                 x = self.critic_weight_dict["state_norm"](x)
             x = self.critic_weight_dict["dense1"](x)
+            if (self.batch_normalization == True):
+                x = self.critic_weight_dict["batch_norm"](x)
             x = self.critic_weight_dict["dense2"](x)
             value = self.critic_weight_dict["value"](x)
             return value
