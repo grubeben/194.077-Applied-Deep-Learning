@@ -89,7 +89,7 @@ _planned:_ 15h _actual:_ ~22h (10h + 3h + 4h + 4h)
 
 ### 5. Hacking time II - continuous action-space A2C agent
 
-_planned:_ 12h _actual:_ 24h [and at current point still learning progress is still unstable]
+_planned:_ 12h _actual:_ 28h [and at current point still learning progress is still unstable]
 
 Making this work appears to demand way more than just adapting NN-output, call and loss functions.
 
@@ -97,14 +97,14 @@ For details on how this proceded, move to the [Results](#results) section.
 
 ### 7. [BONUS] Hacking time III
 
-_planned:_ 12h _actual: /_
+_planned:_ 12h _actual:_ /
 
 - Implement DQ- agent.
 - form hypothesis on behaviour compared to policy-based method
 
 ### 6. Policy performance and convergence analysis/ [BONUS] comparative study
 
-_planned:_ 10h _actual: 10h_
+_planned:_ 10h _actual:_ 10h
 
 - Train and document agent performance and convergence for different versions
 - Implement test function that will run best agent
@@ -113,20 +113,19 @@ _planned:_ 10h _actual: 10h_
 
 ### 8. Presentation
 
-_planned:_ 4h \*actual:
+_planned:_ 4h _actual:_ 
 
 Prepare for presentation.
 
 ### 9. Application/ Visualisation
 
-_planned:_ 6h
+_planned:_ 6h _actual:_ /
 
-- Make a comparing demonstration of policies obtained by policy- vs action-value-based agent
-- If possible highlight actions that demonstrate significant peculiarities of the respective agent
+- this is sort of included in the 'REPORT___.ipynb' files
 
 ---
 
-#### Sum of steps: _planned_ ~80h _actual_ ~81h (excluding)
+#### Sum of steps: _planned_ ~80h _actual_ ~85h (excluding presentation)
 
 </details>
 
@@ -254,37 +253,38 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 <details><summary>Get details</summary>
 
-1. Agents and training
+0. REPORTS
 
-    - **a2cgent_discrete.py**
+    - **REPORT______.ipynb**
+
+      * showcase for discrete and continuous action-spaces
+      * hold convergence analysis for different agent configurations
+
+1. AGENTS AND TRAINING
+
+    - **a2cgent______.py**
 
       * holds _Agent()_ class
       * with methodes to define NN architecture
-      * and itt's related functions (call, value/action)
+      * and it's related functions (call, value/action)
       * loss functions
 
-    - **train-discrete.py**
+    - **train______.py**
 
-      * holds _Session()_ class
+      * holds _Session()_ class ([NOTE: not true for continuous_shared_NN])
       * initiates environment
       * holds train() and test() methods
       * point of interaction for user to set options for _Agent()_-object initialization
       * policy-saving and -loading
 
-    - **discrete.ipynb**
-
-      * showcase for discrete-action-space a2c-agent
-      * based on **1.,2.**
-      * holds convergence analysis for different agent configurations
+2. UTILS
 
     - **continuous-cartpole-env.py**
 
       * holds a custom CartPole environment with continuous action-space forked from [here](https://gist.github.com/iandanforth/e3ffb67cf3623153e968f2afdfb01dc8) and adapted
       such that the render() method integrates with the newest gym= 0.23
 
-2. Utils
-
-    - **training-discrete/** and **training-continuous/**
+    - **training______/** 
 
       * hold (pretrained) models
       * store training data (rewards, losses) for TensorBoard visualisation
@@ -310,8 +310,11 @@ Why and what exactly does that mean? Let's answer this during another session..
 
 ### Continuous-action-space A2C agent
 
-- More troublesome than discrete case; initially unstable training
-- However, some lucky runs deliver results, the overall architecture seems to be sound 
+- More troublesome than discrete case; unstable training
+
+#### ..with shared NN
+
+- Some lucky runs deliver results, the overall architecture seems to be sound 
   * In such cases: good learning within the first 100 episodes, just to collapse after
   * Those 'lucky' models have been stored (see notebook)
 
@@ -332,9 +335,12 @@ Why and what exactly does that mean? Let's answer this during another session..
 - **POTENTIAL ROOT OF ERROR:** Experimenting with 'Acrobat-v0()' (larger action-space than 'CartPole-v1()') in the discrete-action-agent case showed similar behaviour on some occasions. I believe that with increasing complexity of the policy-options (action-space) decoupeling of actor and critic becomes more important. Yet, I did not suspect this when I started out and my architecture uses one NN with two branches, which makes it impossible to set different learning rates for the update.
 However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/comments/jqgrtg/sharing_network_for_actor_critic_methods/) suggest that this might impact learning success majorly.
 
+#### ..with distinct NN
+
 - So I implemented a new actor-critic with 2 NN, this led..
   * to way better NN convergence, because as suggested in several articles the learning rate of the critic is now way higher than the actor one (actor can only make good decisions once critic estimates values well)
   * but while the agent converges, it still does not consistently converge towards 'high-reward' policies
+  * those few configurations that deliver (at least short term) sound learning are reproducable
 
 - Watch the distinct-NN agent at **'REPORT_continuous_distinct_NN.ipynb'**
 
@@ -344,11 +350,6 @@ However, articles such as [this](https://www.reddit.com/r/reinforcementlearning/
 </details>
 
 ---
-
-## TODOs & INTERESTING ADDITIONS
-
-1. Try to make train_continuous training stable by using separate NN for actor and critic
-2. implement gradient clipping for discrete case and observe effect
 
 ## RESEARCH, REFERENCES AND LIBRARIES
 
