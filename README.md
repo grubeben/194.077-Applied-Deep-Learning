@@ -59,7 +59,7 @@ While I have some experience with Q-learning and DQ-learning agents, I have not 
 
 _planned:_ 5h _actual:_ 2h
 
-- **Policy success:** for gym- environments is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
+- **Policy success:** For gym- environments this metric is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
 - **Convergence:** $loss_{total} = loss_{actor} + loss_{critic} + loss_{entropy}$. I measure the total loss per batch (a constant number of steps) and while i refrain from setting a numberic goal here, the metrics behavior over time should clearly indicate whether the agent reached a stable state
 
 ### 3. Decide for an environment
@@ -305,12 +305,13 @@ Why and what exactly does that mean? Let's answer this during another session..
 ### Discrete-action-space A2C agent
 
 - Base model did not meet gym's 'problem solved' criteria
-- Improved agent (featuring state normalization and mish-activation) solved it in **21120  steps**
+- **Improved agent (featuring state normalization and mish-activation) solved it in **21120  steps** **
 - please follow and run **'REPORT_discrete.ipynb'** for more details and consider it an interactive report for the discrete case
 
 ### Continuous-action-space A2C agent
 
 - More troublesome than discrete case; unstable training
+- **No agent solved the open-ai gym problem reproducably**
 
 #### ..with shared NN
 
