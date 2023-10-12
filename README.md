@@ -1,6 +1,7 @@
 # 194.077-Applied-Deep-Learning
 
 Inspection of the performance of policy-based reinforcement learning algorithms by implementation of an n-step A2C agent
+
 Video Project Presentation: https://www.youtube.com/watch?v=bbEv1J6oSts
 
 ![Discrete-Action-Space-A2Cagent performance for different configurations](obs-samples/rewards_over_time_a2c_discrete.PNG "Discrete-Action-Space-A2Cagent performance for different configurations")
