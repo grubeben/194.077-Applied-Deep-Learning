@@ -1,6 +1,6 @@
 # 194.077-Applied-Deep-Learning
 
-Implementation and performance of policy-based n-step A2C agent for openAI-gym environment
+Implementation and performance of an Advantage-Actor-Critic(A2C) agent for openAI-gym environment
 
 Video Project Presentation: https://www.youtube.com/watch?v=bbEv1J6oSts
 
