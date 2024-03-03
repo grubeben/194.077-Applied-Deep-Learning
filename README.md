@@ -12,23 +12,18 @@ Video Project Presentation: https://www.youtube.com/watch?v=bbEv1J6oSts
 
 <details><summary>Get details</summary>
 
-### The project outcome shall definitely include:
+### The project includes:
 
 1. Implementation of an n-step A2C-agent for discrete action spaces
 
-   - Employment of the agent on an open-ai gym environment to establish baseline
+   - Employment of the agent in openAi gym environments
    - Seek improvement by adaption of NN and agent configuration
 
 2. Implementation of an n-step A2C- agent for continuous action spaces
-   - Employment of the agent in a PyBullet (physics-based) environment
+   - Employment of the agent in openAi gym environments
    - Comparison of performance between discrete-A2C and continuous-A2C in similar environment
 
 3. A little [compendix](#foundations) about policy-based methods 
-
-### I will treat the following as BONUS (if time allows [it did not]):
-
-3. Implementation of a DQ- agent for at least one of the action-space scenarios described above
-4. Comparison of convergence and policy quality between action-value-based agent and policy-based agent
 
 ### _Personal goals:_
 
@@ -44,13 +39,9 @@ Video Project Presentation: https://www.youtube.com/watch?v=bbEv1J6oSts
 
 ## STEPS& MILESTONES
 
-Steps that correspond to BONUS-quests are marked with [BONUS].
-
 <details><summary>Get details</summary>
 
 ### 1. Solidify understanding about policy-based methods
-
-_planned:_ 10h _actual:_ ~15h
 
 While I have some experience with Q-learning and DQ-learning agents, I have not implemented algorithms from the policy-based family.
 
@@ -59,14 +50,10 @@ While I have some experience with Q-learning and DQ-learning agents, I have not 
 
 ### 2. Set error-metric
 
-_planned:_ 5h _actual:_ 2h
-
 - **Policy success:** For gym- environments this metric is defined in literature (f.e. CartPole-v1: $reward>=200$ per episode)
 - **Convergence:** $loss_{total} = loss_{actor} + loss_{critic} + loss_{entropy}$. I measure the total loss per batch (a constant number of steps) and while i refrain from setting a numberic goal here, the metrics behavior over time should clearly indicate whether the agent reached a stable state
 
-### 3. Decide for an environment
-
-_planned:_ 8h _actual:_ 8h
+### 3. Decide on an environment
 
 At the start I wanted to work with an TrackMania Nations [^5] framework. Due to exptected extensive GPU training time (5h), I downgraded to PyBullet's implementation of RacecarBullet [^7] only to realize that documentation is barely comprehensive and some methods necessary to wrap it into a gym-env were not provided, which in turn led me to be content with the classical CartPoleEnv.
 
@@ -82,31 +69,18 @@ In order to proof functionality we will have to start on simple tasks anyways.
 
 ### 4. Hacking time I - discrete action-space A2C agent
 
-_planned:_ 15h _actual:_ ~22h (10h + 3h + 4h + 4h)
-
 - Implement the A2C- agent for discrete action spaces.
 - Set up training-data-visualisation (Tensorboard) and policy-saving infrastructure.
 - Read about posssible improvements and implement them
 - Bring all of the above into neat, representable shape
 
 ### 5. Hacking time II - continuous action-space A2C agent
-
-_planned:_ 12h _actual:_ 28h [and at current point still learning progress is still unstable]
+[learning progress is still unstable]
 
 Making this work appears to demand way more than just adapting NN-output, call and loss functions.
-
 For details on how this proceded, move to the [Results](#results) section.
 
-### 7. [BONUS] Hacking time III
-
-_planned:_ 12h _actual:_ /
-
-- Implement DQ- agent.
-- form hypothesis on behaviour compared to policy-based method
-
-### 6. Policy performance and convergence analysis/ [BONUS] comparative study
-
-_planned:_ 10h _actual:_ 10h
+### 6. Policy performance and convergence analysis
 
 - Train and document agent performance and convergence for different versions
 - Implement test function that will run best agent
@@ -114,24 +88,6 @@ _planned:_ 10h _actual:_ 10h
 - Bring results into form for delivery
 
 ### 8. Presentation
-
-_planned:_ 4h _actual:_ 
-
-Prepare for presentation.
-
-### 9. Application/ Visualisation
-
-_planned:_ 6h _actual:_ /
-
-- this is sort of included in the 'REPORT___.ipynb' files
-
----
-
-#### Sum of steps: _planned_ ~80h _actual_ ~85h (excluding presentation)
-
-</details>
-
----
 
 ## FOUNDATIONS
 
